@@ -28,8 +28,7 @@ using std::vector;
 
 // This simple program reads from a file a set of numbers (double format)
 // computes a running mean value, computes the median after sort
-
-// This program has several problems, can you spot them
+// and prints a histogram af all values between 0 and 7999.99 placed into brackets
 
 int main(int argc, char *argv[]) {
 
