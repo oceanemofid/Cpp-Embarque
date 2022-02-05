@@ -38,8 +38,6 @@ DEP_FILES          := $(addprefix  $(OBJDIR)/,$(notdir $(SRC_FILES:.cpp=.r.P)))
 DEP_FILES_DEBUG    := $(addprefix  $(OBJDIR)/,$(notdir $(SRC_FILES:.cpp=.d.P)))
 
 
-all: $(TARGET) c-version
-
 
 $(TARGET): $(OBJECT_FILES) Makefile
 	$(CC) -o $@ $(OBJECT_FILES) $(LDFLAGS)
