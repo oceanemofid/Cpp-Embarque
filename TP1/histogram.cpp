@@ -2,11 +2,11 @@
 // header-start
 //////////////////////////////////////////////////////////////////////////////////
 //
-// \file      mean_and_median.cpp
+// \file      histogram
 //
 // \brief     This file belongs to the C++ tutorial project
 //
-// \author    Bernard
+// \author    Jonas Audrey, Ghobrial Sara, Mofid Océane
 //
 // \copyright Copyright ng2goodies 2015
 //            Distributed under the MIT License
@@ -16,25 +16,12 @@
 // header-end
 //
 
-
-// C++ version
-// Compilation with g++ 5.3.0 & g++ 6.3.0 
-// mingwin: g++ -std=c++14 -O3 -o mean_and_median mean_and_median.cpp
-
-// Compilation with g++ 4.9.3
-// cygwin:  g++ -D_GLIBCXX_USE_C99 -D_GLIBCXX_USE_C99_DYNAMIC -std=c++14 -O3 ...
-
-// Other tool chain 
-// msvc:    ok!
-// clang:   ok! 
-
-//test 
-
 #include <string>
 #include <vector>
 #include <fstream>
 #include <iostream>
 #include <algorithm>
+#include <iomanip>
 
 using std::string;
 using std::vector;
@@ -78,9 +65,10 @@ int main(int argc, char *argv[]) {
   vector<double> subvector;
   for(int i = 0; i<80; ++i){
     for(int m = 0; m<t; ++m){
-    //on met dans un sous vector si la valeur est dans l'intervalle
-      if(buf[i]<100*i+100 && buf[i]>100*i){
-        subvector.push_back(buf[i]);
+      //on parcourt tout le buf et 
+      //on met dans un sous vector si la valeur est dans l'intervalle
+      if(buf[m]<100*i+100 && buf[m]>100*i){
+        subvector.push_back(buf[m]);
       }
     }
     //on récupère la taille du subvecteur
@@ -99,7 +87,8 @@ int main(int argc, char *argv[]) {
   //affichage
   //affiche le bracket inf puis le nbr d'éléments de la bracket puis les étoiles
   for(int i = 0; i<80 ; ++i){
-    std::cout << 100*i << "       " << all_sizes[i] << "     ";
+    //les setw nous permettent d'aligner les éléments
+    std::cout << std::setw(6) << 100*i << std::setw(6) << all_sizes[i] << std::setw(6) ;
     int nbr = int((all_sizes[i]*60)/maxi);
     //print le bon nbr d'étoiles
     for(int j = 0; j < nbr; ++j){
