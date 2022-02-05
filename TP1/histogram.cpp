@@ -88,6 +88,8 @@ int main(int argc, char *argv[]) {
     //on compare la size de la bracket actuelle au max précédent
     maxi = std::max(maxi,taille);
     all_sizes.push_back(taille); //on stocke la size du subvecteur
+    //on efface le subvecteur
+    subvector.clear();
   }
   //infos 
   std::cout << "number of elements = " << buf.size()
@@ -97,7 +99,7 @@ int main(int argc, char *argv[]) {
   //affichage
   //affiche le bracket inf puis le nbr d'éléments de la bracket puis les étoiles
   for(int i = 0; i<80 ; ++i){
-    std::cout << i << " " << all_sizes[i] << " ";
+    std::cout << 100*i << "       " << all_sizes[i] << "     ";
     int nbr = int((all_sizes[i]*60)/maxi);
     //print le bon nbr d'étoiles
     for(int j = 0; j < nbr; ++j){
