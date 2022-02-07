@@ -37,11 +37,7 @@ int main(int argc, char *argv[]) {
     string qin;
     std::map<std::string, double> identifierKey;
 
-    while(qin.compare("END")){
-        std::cout << "query > ";
-        std::cin >> qin;
-    
-        while (std::getline(fin, line)) {
+    while (std::getline(fin, line)) {
 
             std::istringstream stream(line);
             string s;
@@ -50,14 +46,19 @@ int main(int argc, char *argv[]) {
             identifierKey.insert({s, f});
             // extract the rest using the streambuf overload
             stream >> std::cout.rdbuf();
-
         }
+
+    while(qin.compare("END")){
+        std::cout << "query > ";
+        std::cin >> qin;
+        
             if(identifierKey.find(qin) != identifierKey.end()){
                 std::cout << "value[" << identifierKey.find(qin)->first << "] = "
                 << identifierKey.find(qin)->second << std::endl;
             }
 
             else {
+                //à voir 
                 if(qin == "END"){
                     break;
                 }
