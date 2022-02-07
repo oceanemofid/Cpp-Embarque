@@ -31,4 +31,20 @@ using std::vector;
 // and prints a histogram af all values between 0 and 7999.99 placed into brackets
 
 int main(int argc, char *argv[]) {
+
+    string file_name{argv[1]};
+    std::ifstream fin(file_name, std::ios::in);
+    string line;
+
+    std::cout << "query > ";
+    std::string query;
+    std::cin >> query;
+    
+    while (std::getline(fin, line)) {
+        std::cout << line << std::endl;
+    }
+    
+
+
+
 }
