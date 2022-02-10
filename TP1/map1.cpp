@@ -38,33 +38,29 @@ int main(int argc, char *argv[]) {
     std::map<std::string, double> identifierKey;
 
     while (std::getline(fin, line)) {
+        std::istringstream stream(line);
+        string s;
+        double f;
+        stream >> s >> f ;
+        identifierKey.insert({s, f});
+        // extract the rest using the streambuf overload
+        stream >> std::cout.rdbuf();
+    }
 
-            std::istringstream stream(line);
-            string s;
-            double f;
-            stream >> s >> f ;
-            identifierKey.insert({s, f});
-            // extract the rest using the streambuf overload
-            stream >> std::cout.rdbuf();
-        }
-
-    while(qin.compare("END")){
+    for(;;) { // boucle infinie
         std::cout << "query > ";
         std::cin >> qin;
         
-            if(identifierKey.find(qin) != identifierKey.end()){
-                std::cout << "value[" << identifierKey.find(qin)->first << "] = "
-                << identifierKey.find(qin)->second << std::endl;
+        auto it = identifierKey.find(qin);
+        if(it != identifierKey.end()) {
+            std::cout << "value[" << qin << "] = "
+                      << it->second << std::endl;
+        } else {
+            if(qin == "END"){
+                break;
             }
-
-            else {
-                //à voir 
-                if(qin == "END"){
-                    break;
-                }
-                std::cout << "This ID does not exist" << std::endl;
-            }
-        
+            std::cout << "This ID does not exist" << std::endl;
+        }
     }
     std::cout << "Bye..." << std::endl;
 }

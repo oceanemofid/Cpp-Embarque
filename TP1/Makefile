@@ -27,9 +27,9 @@ CFLAGS_DEBUG       := $(CFLAGS_COMMON) -g
 CFLAGS             := $(CFLAGS_COMMON) -O3
 
 
-TARGET             := histogram
+TARGET             := map1
 SRC_FILES          := \
-  ./histogram.cpp
+  ./map1.cpp
 
 
 OBJECT_FILES       := $(addprefix  $(OBJDIR)/,$(notdir $(SRC_FILES:.cpp=.r.o)))
