@@ -87,14 +87,9 @@ int main(int argc, char *argv[]) {
   //affiche le bracket inf puis le nbr d'éléments de la bracket puis les étoiles
   for(int i = 0; i<80 ; ++i){
     //les setw nous permettent d'aligner les éléments
-    std::cout << std::setw(6) << 100*i << std::setw(6) << all_sizes[i] << std::setw(6) ;
     int nbr = int((all_sizes[i]*60)/maxi);
-    //print le bon nbr d'étoiles
-    for(int j = 0; j < nbr; ++j){
-      std::cout << "*";
-    }
-    std::cout << std::endl;
+      std::cout << std::setfill(' ') << std::setw(6) << 100*i << std::setw(6) << all_sizes[i] << ' ' <<std::string(nbr, '*') << std::endl ;
   }
   
 }
-//test 2
+
