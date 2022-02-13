@@ -88,7 +88,8 @@ int main(int argc, char *argv[]) {
   for(int i = 0; i<80 ; ++i){
     //les setw nous permettent d'aligner les éléments
     int nbr = int((all_sizes[i]*60)/maxi);
-      std::cout << std::setfill(' ') << std::setw(6) << 100*i << std::setw(6) << all_sizes[i] << ' ' <<std::string(nbr, '*') << std::endl ;
+      std::cout << std::setfill(' ') << std::setw(6) << 100*i << 
+      std::setw(6) << all_sizes[i] << ' ' <<std::string(nbr, '*') << std::endl ;
   }
   
 }

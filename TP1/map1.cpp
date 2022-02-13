@@ -43,8 +43,6 @@ int main(int argc, char *argv[]) {
         double f;
         stream >> s >> f ;
         identifierKey.insert({s, f});
-        // extract the rest using the streambuf overload
-        stream >> std::cout.rdbuf();
     }
 
     for(;;) { // boucle infinie
@@ -52,14 +50,17 @@ int main(int argc, char *argv[]) {
         std::cin >> qin;
         
         auto it = identifierKey.find(qin);
-        if(it != identifierKey.end()) {
-            std::cout << "value[" << qin << "] = "
-                      << it->second << std::endl;
-        } else {
-            if(qin == "END"){
+        if(qin == "END"){
                 break;
             }
-            std::cout << "This ID does not exist" << std::endl;
+        else{
+            if(it != identifierKey.end()) {
+                std::cout << "value[" << qin << "] = "
+                      << it->second << std::endl;
+            }   
+            else {
+                std::cout << "This ID does not exist" << std::endl;
+            }
         }
     }
     std::cout << "Bye..." << std::endl;
