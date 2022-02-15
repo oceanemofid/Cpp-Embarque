@@ -1,4 +1,3 @@
-//
 // header-start
 //////////////////////////////////////////////////////////////////////////////////
 //
@@ -59,24 +58,17 @@ int main(int argc, char *argv[]) {
                 double din = std::stod(qin);
                 double dmin = .99 * din;
                 double dmax = 1.01 * din;
-                bool found = false;
-
-                for(auto& valueKeyPair : keyByValueMap) {
-                    double v = valueKeyPair.first;
-                    if(v > dmax) {
-                        break;
-                    }
-                    if(v >= dmin) {
-                        std::cout << "value[" << valueKeyPair.second << "] = " << v << std::endl;
-                        found = true;
-                    }
-                }
                 
-                if(!found) {
+                auto it = keyByValueMap.lower_bound(dmin);
+                if(it == keyByValueMap.end()) {
                     std::cout << "No identifier found for specified value: " << din << std::endl;
                 }
-            }
-            catch(...) {
+                while(it != keyByValueMap.end() && it->first <= dmax) {
+                    std::cout << "value[" << it->second << "] = " << it->first << std::endl;
+                    ++it;
+                }
+
+            } catch(std::invalid_argument&) {
                 std::cerr << qin << " is not a valid key value" << std::endl;
             }
             
