@@ -69,7 +69,7 @@ int main(int argc, char *argv[]) {
                }
 
                if(!found)
-                   std::cout<< " No identifier found for specified value: " << qin << std::endl;
+                   std::cout<< "No identifier found for specified value: " << qin << std::endl;
 
            } catch(std::invalid_argument&) {
                std::cerr << qin << " is not a valid key value" << std::endl;
