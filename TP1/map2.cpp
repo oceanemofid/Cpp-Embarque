@@ -30,57 +30,61 @@ using std::string;
 
 int main(int argc, char *argv[]) {
 
-    string file_name{argv[1]};
-    std::ifstream fin(file_name, std::ios::in);
-    string line;
-    string qin;
-    std::map<std::string, double> identifierKey;
-    std::multimap<double, std::string> keyByValueMap;
+   string file_name{argv[1]};
+   std::ifstream fin(file_name, std::ios::in);
+   string line;
+   string qin;
+   std::map<std::string, double> identifierKey;
+   std::multimap<double, std::string> keyByValueMap;
 
-    while (std::getline(fin, line)) {
-        std::istringstream stream(line);
-        string s;
-        double f;
-        stream >> s >> f ;
-        identifierKey.insert({s, f});
-        keyByValueMap.insert({f, s});
-    }
+   while (std::getline(fin, line)) {
+       std::istringstream stream(line);
+       string s;
+       double f;
+       stream >> s >> f ;
+       identifierKey.insert({s, f});
+       keyByValueMap.insert({f, s});
+   }
 
-    for(;;) { // boucle infinie
-        std::cout << "query > ";
-        std::cin >> qin;
-        if(qin == "END"){
-            break;
-        }
+   for(;;) { // boucle infinie
+       std::cout << "query > ";
+       std::cin >> qin;
+       if(qin == "END"){
+           break;
+       }
 
-        if (qin[0] == '+') { // reading a double from qin string
-            try {
-                double din = std::stod(qin);
-                double dmin = .99 * din;
-                double dmax = 1.01 * din;
-                
-                auto it = keyByValueMap.lower_bound(dmin);
-                if(it == keyByValueMap.end()) {
-                    std::cout << "No identifier found for specified value: " << din << std::endl;
-                }
-                while(it != keyByValueMap.end() && it->first <= dmax) {
-                    std::cout << "value[" << it->second << "] = " << it->first << std::endl;
-                    ++it;
-                }
+       if (qin[0] == '+') { // reading a double from qin string
+           try {
+               double din = std::stod(qin);
+               double dmin = .99 * din;
+               double dmax = 1.01 * din;
+               bool found = false;
 
-            } catch(std::invalid_argument&) {
-                std::cerr << qin << " is not a valid key value" << std::endl;
-            }
-            
-        } else { // reading a key from qin string
-            auto it = identifierKey.find(qin);
-            if(it != identifierKey.end()) {
-                std::cout << "value[" << qin << "] = "
-                          << it->second << std::endl;
-            } else {
-               std::cout << "This ID does not exist" << std::endl;
+               for(auto it = keyByValueMap.lower_bound(dmin); it != keyByValueMap.end(); ++it) {
+                   if(it->first > dmax)
+                       break;
+
+                   std::cout << "value[" << it->second << "] = " << it->first << std::endl;
+                   found = true;
+               }
+
+               if(!found)
+                   std::cout<< " No identifier found for specified value: " << qin << std::endl;
+
+           } catch(std::invalid_argument&) {
+               std::cerr << qin << " is not a valid key value" << std::endl;
            }
-        }
-    }
-    std::cout << "Bye..." << std::endl;
+           
+       } else { // reading a key from qin string
+           auto it = identifierKey.find(qin);
+           if(it != identifierKey.end()) {
+               std::cout << "value[" << qin << "] = "
+                         << it->second << std::endl;
+           } else {
+              std::cout << "This ID does not exist" << std::endl;
+          }
+       }
+   }
+   std::cout << "Bye..." << std::endl;
 }
+
