@@ -43,6 +43,10 @@
         "ctime": "cpp",
         "iomanip": "cpp",
         "xlocmon": "cpp",
-        "xloctime": "cpp"
+        "xloctime": "cpp",
+        "map": "cpp",
+        "sstream": "cpp",
+        "xtree": "cpp",
+        "random": "cpp"
     }
 }
