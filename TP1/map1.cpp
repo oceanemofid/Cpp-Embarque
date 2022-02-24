@@ -21,7 +21,7 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include <map>
+#include <unordered_map>
 
 using std::string;
 
@@ -35,7 +35,7 @@ int main(int argc, char *argv[]) {
     std::ifstream fin(file_name, std::ios::in);
     string line;
     string qin;
-    std::map<std::string, double> identifierKey;
+    std::unordered_map<std::string, double> identifierKey;
 
     while (std::getline(fin, line)) {
         std::istringstream stream(line);
