@@ -1,10 +1,9 @@
-#include <Eigen/Dense> 
+//#include <Eigen/Dense> 
 #include <iostream> 
 
 
 class linear{
     private : 
-    public : 
-        linear()    
+    public :   
 
 };
