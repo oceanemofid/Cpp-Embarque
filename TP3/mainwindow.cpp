@@ -103,6 +103,27 @@ void MainWindow::slot_load_triangle_image() {
     m++;
 
  }
+  const QColor triangleColor(255, 0, 244);
+  QPen trianglePen(triangleColor);
+  painter.setPen(trianglePen);
+  QPoint Red, Green, Blue;
+  Red.setX(0.64*599);
+  Red.setY((1-0.33)*599);
+  Green.setX(0.3*599);
+  Green.setY((1-0.6)*599);
+  Blue.setX(0.15*599);
+  Blue.setY((1-0.06)*599);
+  painter.drawLine(Red,Blue);
+  painter.drawLine(Blue,Green);
+  painter.drawLine(Green,Red);
+  for (int y = 0; y < triangle_image_height; ++y) {
+    for (int x = 0; x < triangle_image_width; ++x) {
+        if(x){
+            triangle_image.setPixel(x, y, qRgb(255, 0, 244));
+        }
+    }
+ }
+
 
 
 
@@ -114,3 +135,5 @@ void MainWindow::slot_load_triangle_image() {
   image_widget_->setFixedSize(triangle_image_width, triangle_image_height);
   adjustSize();
 }
+
+
