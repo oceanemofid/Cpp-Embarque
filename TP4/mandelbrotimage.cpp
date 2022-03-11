@@ -1,6 +1,5 @@
 #include "mandelbrotimage.h"
 
-MandelbrotImage::MandelbrotImage()
-{
+Mandelbrotimage::Mandelbrotimage(){
 
 }
