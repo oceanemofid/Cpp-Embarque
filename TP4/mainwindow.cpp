@@ -1,10 +1,9 @@
-﻿
+
 #include "mainwindow.h"
 #include <iostream>
 #include <string>
 #include <QtWidgets>
 #include "mandelbrotimage.h"
-
 
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
@@ -68,15 +67,23 @@ void MainWindow::create_menus() {
 //
 // Triangle
 //
-const int mandelbrot_width_ = 600;
-const int mandelbrot_height_ = 600;
+const int mandelbrot_width = 600;
+const int mandelbrot_height = 400;
 
 void MainWindow::slot_load_mandelbrot_image() {
-    MandelbrotImage mandelbrot_image(mandelbrot_width_, mandelbrot_height_);
 
+  // The ~10 lines of code below must be changed with your code
+  // Create a QImage of required size
+  // Draw a simple black/white checker board
+
+    MandelbrotImage mandelbrot_image(mandelbrot_width, mandelbrot_height);
     image_widget_->setPixmap(QPixmap::fromImage(mandelbrot_image));
-    image_widget_->setFixedSize(mandelbrot_width_, mandelbrot_height_);
+    image_widget_->setFixedSize(mandelbrot_width,mandelbrot_height);
     adjustSize();
-}
+ }
 
 
+
+  //
+  // You probably don't want to change these lines 
+  //

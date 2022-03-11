@@ -39,4 +39,5 @@ private:
   QMenu *menu_help_;
 };
 
+
 #endif  // MAINWINDOW_H
