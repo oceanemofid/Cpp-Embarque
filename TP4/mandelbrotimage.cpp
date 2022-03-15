@@ -1,14 +1,23 @@
 #include "mandelbrotimage.h"
+#include <complex>
+#include <cmath>
 
 MandelbrotImage::MandelbrotImage(const int width, const int height): QImage (width, height, QImage::Format_RGB32){
     for(int py=0; py<height;py++){
         for(int px=0; px<width;px++){
+            double rx= convert(px,py).first;
+            double ry= convert(px,py).second;
+
             //auto[rx,ry] = convert(px,py);
-              //      auto[is_inside, rgb_color] = calc_in_out(rx,ry);
-                    //if(not is_inside){
-                QRgb rgb_color= qRgb(255, 218, 103);
-                setPixel(px, py, rgb_color);
-         //}
+            bool is_outside=calc_in_out(rx,ry).first;
+            QRgb rgb_color =calc_in_out(rx,ry).second;
+            //auto[is_outside, rgb_color] = calc_in_out(rx,ry);
+            //setPixel(px, py, qRgb(255,218,103));
+            //if(is_outside){
+              //rgb_color=(255,218,103);
+            //}
+            setPixel(px, py, rgb_color);
+
         }
     }
 }
@@ -53,15 +62,27 @@ std::pair<double,double> MandelbrotImage::convert(double px, double py){
 
 }
 
-std::pair<bool, QColor> MandelbrotImage::calc_in_out(double rx, double ry)
+
+std::pair<bool, QRgb> MandelbrotImage::calc_in_out(double rx, double ry)
 {
-    std::complex<double, double> c0( , );
-    std::complex<double, double> z( , );
-    for(;;){
+    //c0= x0 +iy0
+    //z0 = 0
+    std::complex c0(rx,ry);
+    std::complex z(0.0,0.0);
+    for(int n=0; n<512; n++){
         z = z*z+c0;
     }
-        return std::make_pair(is_outside, color)
-
-
+    double module= abs(z);
+    bool is_outside;
+    QRgb color;
+    if(module <2){
+        is_outside=false;
+        color=qRgb(255, 255, 255);
+    }
+    else{
+        color=qRgb(0,0,0);
+    }
+    return std::make_pair(is_outside, color);
 }
+
 
