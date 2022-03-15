@@ -51,7 +51,7 @@ std::pair<double,double> MandelbrotImage::convert(double px, double py){
     double ry = h_pixel2rect(py,cy,d,py_min,py_max);
     return std::make_pair(rx,ry);
 
-}
+}       
 
 std::pair<bool, QColor> MandelbrotImage::calc_in_out(double rx, double ry)
 {
