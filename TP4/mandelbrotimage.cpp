@@ -11,13 +11,12 @@ MandelbrotImage::MandelbrotImage(const int width, const int height): QImage (wid
             //auto[rx,ry] = convert(px,py);
             bool is_outside=calc_in_out(rx,ry).first;
             QRgb rgb_color =calc_in_out(rx,ry).second;
+            setPixel(px, py, rgb_color);
             //auto[is_outside, rgb_color] = calc_in_out(rx,ry);
             //setPixel(px, py, qRgb(255,218,103));
-            //if(is_outside){
-              //rgb_color=(255,218,103);
-            //}
-            setPixel(px, py, rgb_color);
+            /*if(is_outside){
 
+            }*/
         }
     }
 }
@@ -69,23 +68,48 @@ std::pair<bool, QRgb> MandelbrotImage::calc_in_out(double rx, double ry)
     //z0 = 0
     std::complex c0(rx,ry);
     std::complex z(0.0,0.0);
-    QRgb color;
-    bool is_outside =false;
+    QRgb color= qRgb(0, 0, 0);
+    bool is_inside =true;
+    //tab of 2048 colors
+    std::vector<std::tuple<int,int,int>> tab_color;
     for(int n=0; n<512; n++){
         z = z*z+c0;
         double module= sqrt(z.real()*z.real()+z.imag()*z.imag());
         if(module>2){
-            is_outside=true;
+            color=qRgb(255,218,103);
+            is_inside=false;
             break;
         }
     }
-    if(is_outside){
-        color=qRgb(255,218,103);
+    return std::make_pair(is_inside, color);
+}
+
+std::tuple<int,int,int> MandelbrotImage::getColor(double y){
+
+
+
+}
+
+
+
+
+
+
+MandelbrotImage::interpolC(std::vector<double> ys){
+    std::vector<double> ai_;
+    std::vector<double> bi_;
+    bi_=ys;
+    for(int i=0; i<xs_.size()-1; i++) {
+          ai_.push_back((ys[i+1]-ys[i])/(xs_[i+1]-xs_[i]));
+        }
+}
+
+double MandelbrotImage::get_value(const double y) const {
+    for(int i=0; i<xs_.size(); i++) {
+      if(xs_[i]<= x and x <= xs_[i+1]){
+          return ;
+      }
     }
-    else{
-        color=qRgb(0, 0, 0);
-    }
-    return std::make_pair(is_outside, color);
 }
 
 
