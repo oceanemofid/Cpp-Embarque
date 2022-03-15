@@ -39,7 +39,7 @@ double MandelbrotImage::h_pixel2rect(double py, double cy, double d, double py_m
     //ry: yc+d      ---          yc-d
     //a , b
     double ay = (2.0*d/(py_max - py_min));
-    double by = cy -d;
+    double by = cy + d;
     double ry = -ay*py+by;
     return ry;
 }
@@ -69,18 +69,21 @@ std::pair<bool, QRgb> MandelbrotImage::calc_in_out(double rx, double ry)
     //z0 = 0
     std::complex c0(rx,ry);
     std::complex z(0.0,0.0);
+    QRgb color;
+    bool is_outside =false;
     for(int n=0; n<512; n++){
         z = z*z+c0;
+        double module= sqrt(z.real()*z.real()+z.imag()*z.imag());
+        if(module>2){
+            is_outside=true;
+            break;
+        }
     }
-    double module= abs(z);
-    bool is_outside;
-    QRgb color;
-    if(module <2){
-        is_outside=false;
-        color=qRgb(255, 255, 255);
+    if(is_outside){
+        color=qRgb(255,218,103);
     }
     else{
-        color=qRgb(0,0,0);
+        color=qRgb(0, 0, 0);
     }
     return std::make_pair(is_outside, color);
 }
