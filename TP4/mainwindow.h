@@ -25,13 +25,13 @@ public:
 private slots:
   void slot_exit();
   void slot_about();
-  void slot_load_mandelbrot_image();
+  void slot_load_Mandelbrot_image();
 
 private:
   void create_menus();
   void create_actions();
 
-  QAction *action_triangle_image_;
+  QAction *action_Mandelbrot_image_;
   QAction *action_about_;
   QAction *action_exit_;
 
