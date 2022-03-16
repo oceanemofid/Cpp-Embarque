@@ -3,8 +3,9 @@
 #include <iostream>
 #include <complex>
 #include <cmath>
-
+#include <chrono>
 MandelbrotImage::MandelbrotImage(const int width, const int height): QImage (width, height, QImage::Format_RGB32){
+    auto start = std::chrono::steady_clock::now();
     create_tab_color();
     double cx = -0.5;
     double cy = 0.0;
@@ -24,6 +25,9 @@ MandelbrotImage::MandelbrotImage(const int width, const int height): QImage (wid
             setPixel(px, py, rgb_color);
         }
     }
+    auto end = std::chrono::steady_clock::now();
+    std::chrono::duration<double> elapsed_seconds = end-start;
+    std::cout << "elapsed time: " << elapsed_seconds.count() << "s\n";
 }
 
 
