@@ -1,11 +1,13 @@
 #include "mandelbrotimage.h"
 #include "interpolator.h"
+#include "Commify.h"
 #include <iostream>
 #include <complex>
 #include <cmath>
 #include <chrono>
+
 MandelbrotImage::MandelbrotImage(const int width, const int height): QImage (width, height, QImage::Format_RGB32){
-    auto start = std::chrono::steady_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
     create_tab_color();
     double cx = -0.5;
     double cy = 0.0;
@@ -25,9 +27,11 @@ MandelbrotImage::MandelbrotImage(const int width, const int height): QImage (wid
             setPixel(px, py, rgb_color);
         }
     }
-    auto end = std::chrono::steady_clock::now();
-    std::chrono::duration<double> elapsed_seconds = end-start;
-    std::cout << "elapsed time: " << elapsed_seconds.count() << "s\n";
+    auto end = std::chrono::high_resolution_clock::now();
+    auto interval = end-start;
+    int64_t t = std::chrono::duration_cast<std::chrono::microseconds>(interval).count();
+    Commify exe_time(t);
+    std::cout << "INFO: image calculated in  " << exe_time << "us\n";
 }
 
 
@@ -52,18 +56,6 @@ double MandelbrotImage::v_pixel2rect(double py, double cy, double d, double py_m
     double ry = -ay*py+by;
     return ry;
 }
-/*
-std::pair<double,double> MandelbrotImage::convert(double px, double py){
-
-
-    //linear interpolation with x
-    double rx = h_pixel2rect(px,cx,d,px_min,px_max);
-    //linear interpolation with y
-    double ry = v_pixel2rect(py,cy,d,py_min,py_max);
-    return std::make_pair(rx,ry);
-
-}
-*/
 
 QRgb MandelbrotImage::calc_in_out(double rx, double ry)
 {
@@ -97,7 +89,6 @@ QRgb MandelbrotImage::calc_in_out(double rx, double ry)
     }
 
 
-
 /*
  * Role:Create the vector of nb_color colors
  */
@@ -111,7 +102,6 @@ void MandelbrotImage::create_tab_color(){
         tab_colors.push_back(interpolColors(i/nb_color));
     }
 }
-
 
 
 /*
@@ -130,12 +120,11 @@ QRgb MandelbrotImage::interpolColors(double x){
     QRgb color = qRgb(R,G,B);
     //std::cout << R << " " << G << " " << B << std::endl;
     return color;
-
 }
+
 /*
  * return  notre donnée double en castée int
  */
-
 int MandelbrotImage::is_valid(double color){
     int c= static_cast<int>(color);
     if(c<0 || c>255){
@@ -146,30 +135,4 @@ int MandelbrotImage::is_valid(double color){
     }
     return c;
 }
-
-/*
- * Role: return a vector of a QColor constructed with the R G B components of x
-
-std::vector<QColor> MandelbrotImage::get_value(const double x) const {
-    int R,G,B;
-    std::vector<QColor> vect_RGB;
-    QColor component;qt
-    for(unsigned long long i=0; i<xs_.size(); i++) {
-      //we search to each interval x belongs
-      if(xs_[i]<= x and x <= xs_[i+1]){
-          //we compute each component of the color R,G,B
-          R = is_valid(ai_r[i]*(x-xs_[i])+yr_[i]);
-          G = is_valid(ai_g[i]*(x-xs_[i])+yg_[i]);
-          B = is_valid(ai_b[i]*(x-xs_[i])+yb_[i]);
-          //create a color with the RGB values
-          component=QColor(R,G,B);
-          vect_RGB.push_back(component);
-      }
-    }
-    return vect_RGB;
-}
-*/
-
-
-
 
