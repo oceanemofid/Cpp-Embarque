@@ -20,15 +20,14 @@ private:
   std::vector<double> yb_{ 100., 183. , 235. , 40. , 15. };
 
   //vector of 2048 RGB colors
-  std::vector<std::vector<QColor>> tab_colors;
+  std::vector<QRgb> tab_colors;
   //methods
-  std::pair<double,double> convert(double px, double py);
-  std::pair<bool, QRgb> calc_in_out(double rx, double ry);
-  double v_pixel2rect(double px, double cx, double d, double px_min, double px_max);
-  double h_pixel2rect(double py, double cy, double d, double py_min, double py_max);
+  //std::pair<double,double> convert(double px, double py);
+  QRgb calc_in_out(double rx, double ry);
+  double h_pixel2rect(double px, double cx, double d, double px_min, double px_max);
+  double v_pixel2rect(double py, double cy, double d, double py_min, double py_max);
   //std::vector<QColor> get_value(const double x) const;
-  void interpolColors(double x)
-  void interpolColors();
+  QRgb interpolColors(double x);
   void create_tab_color();
   int is_valid(double color);
 };

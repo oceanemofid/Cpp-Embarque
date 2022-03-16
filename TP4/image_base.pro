@@ -24,7 +24,6 @@ UI_DIR = $$DESTDIR/.ui
 
 
 SOURCES += main.cpp\
-    interpolator.cpp \
     mainwindow.cpp \
     mandelbrotimage.cpp
 
