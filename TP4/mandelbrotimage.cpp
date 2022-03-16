@@ -1,25 +1,18 @@
 #include "mandelbrotimage.h"
+#include "interpolator.h"
 #include <complex>
 #include <cmath>
 
 MandelbrotImage::MandelbrotImage(const int width, const int height): QImage (width, height, QImage::Format_RGB32){
     for(int py=0; py<height;py++){
         for(int px=0; px<width;px++){
-            double rx= convert(px,py).first;
-            double ry= convert(px,py).second;
-
-            //auto[rx,ry] = convert(px,py);
-            bool is_outside=calc_in_out(rx,ry).first;
+            auto[rx,ry] = convert(px,py);
             QRgb rgb_color =calc_in_out(rx,ry).second;
             setPixel(px, py, rgb_color);
-            //auto[is_outside, rgb_color] = calc_in_out(rx,ry);
-            //setPixel(px, py, qRgb(255,218,103));
-            /*if(is_outside){
-
-            }*/
         }
     }
 }
+
 
 double MandelbrotImage::v_pixel2rect(double px, double cx, double d, double px_min, double px_max){
     //linea interpolation with x
@@ -70,52 +63,83 @@ std::pair<bool, QRgb> MandelbrotImage::calc_in_out(double rx, double ry)
     std::complex z(0.0,0.0);
     QRgb color= qRgb(0, 0, 0);
     bool is_inside =true;
-    //tab of 2048 colors
-    std::vector<std::tuple<int,int,int>> tab_color;
+
     for(int n=0; n<512; n++){
         z = z*z+c0;
         double module= sqrt(z.real()*z.real()+z.imag()*z.imag());
         if(module>2){
-            color=qRgb(255,218,103);
+            //color=qRgb(255,218,103);
             is_inside=false;
             break;
         }
+
     }
     return std::make_pair(is_inside, color);
 }
 
-std::tuple<int,int,int> MandelbrotImage::getColor(double y){
-
-
-
-}
-
-
-
-
 /*
- * interpolC = void qui met à jour les ai pour R,G,B qui sont des variables memnres
- *
- *
- *
- *
+ * Role:Create the vector of nb_color colors
  */
+void MandelbrotImage::create_tab_color(){
+    //nb of colors we want
+    int nb_color= 2048;
 
-MandelbrotImage::interpolC(std::vector<double> ys){
-    std::vector<double> ai_;
-    std::vector<double> bi_;
-    bi_=ys;
-    for(int i=0; i<xs_.size()-1; i++) {
-          ai_.push_back((ys[i+1]-ys[i])/(xs_[i+1]-xs_[i]));
-        }
-}
-
-double MandelbrotImage::get_value(const double y) const {
-    for(int i=0; i<xs_.size(); i++) {
-      if(xs_[i]<= x and x <= xs_[i+1]){
-          return ;
-      }
+    //we iterate to calculate the 2048 RGB colors
+    for(int i=1; i<=nb_color; i++){
+        //we add to the vector the new color
+        tab_colors.push_back(interpolColors(i/nb_color));
     }
 }
+
+/*
+ * Role:
+ */
+void MandelbrotImage::interpolColors(double x){
+    int R, G, B;
+    //we create 3 interpolators objects (R, G, B)
+    Interpolator interpolation_R(xs_,yr_);
+    Interpolator interpolation_G(xs_,yg_);
+    Interpolator interpolation_B(xs_,yb_);
+    //we compute our R,G,B components
+    R=is_valid(interpolation_R.get_value(x));
+    G=is_valid(interpolation_R.get_value(x));
+    B=is_valid(interpolation_R.get_value(x));
+}
+
+int MandelbrotImage::is_valid(double color){
+    int c= static_cast<int>(color);
+    if(c<0 || c>255){
+        if(c<0){
+            return 0;
+        }
+        return 255;
+    }
+    return c;
+}
+
+/*
+ * Role: return a vector of a QColor constructed with the R G B components of x
+
+std::vector<QColor> MandelbrotImage::get_value(const double x) const {
+    int R,G,B;
+    std::vector<QColor> vect_RGB;
+    QColor component;
+    for(unsigned long long i=0; i<xs_.size(); i++) {
+      //we search to each interval x belongs
+      if(xs_[i]<= x and x <= xs_[i+1]){
+          //we compute each component of the color R,G,B
+          R = is_valid(ai_r[i]*(x-xs_[i])+yr_[i]);
+          G = is_valid(ai_g[i]*(x-xs_[i])+yg_[i]);
+          B = is_valid(ai_b[i]*(x-xs_[i])+yb_[i]);
+          //create a color with the RGB values
+          component=QColor(R,G,B);
+          vect_RGB.push_back(component);
+      }
+    }
+    return vect_RGB;
+}
+*/
+
+
 
 

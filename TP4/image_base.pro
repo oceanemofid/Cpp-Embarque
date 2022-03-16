@@ -24,11 +24,13 @@ UI_DIR = $$DESTDIR/.ui
 
 
 SOURCES += main.cpp\
+    interpolator.cpp \
     mainwindow.cpp \
     mandelbrotimage.cpp
 
 
 HEADERS  += mainwindow.h \
+    interpolator.h \
     mandelbrotimage.h
 
 QMAKE_CXXFLAGS += -std=c++17
