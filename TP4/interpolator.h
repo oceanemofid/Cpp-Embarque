@@ -29,7 +29,7 @@ public:
     /*
      * get value prend l'objet courant (un interpolator) et va return la valeur y=f(x)
      */
-    double get_value(const double x) const {
+    double get_value(const double &x) const {
         for (unsigned int i = 0; i < xs_.size(); i++) {
           if (xs_[i] <= x and x <= xs_[i+1]) {
               return std::clamp(ai_[i] * (x - xs_[i]) + bi_[i], 0., 255.);

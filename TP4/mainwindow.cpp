@@ -6,6 +6,12 @@
 #include "Commify.h"
 #include <chrono>
 
+double cx = -0.5;
+double cy = 0;
+double d = 1;
+
+const int mandelbrot_width = 600;
+const int mandelbrot_height = 400;
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
   //
@@ -63,10 +69,34 @@ void MainWindow::create_menus() {
   menuBar()->addMenu(menu_help_);
 }
 
+void MainWindow::keyPressEvent(QKeyEvent *event){
+    switch (event->key()) {
+        case Qt::Key_Left:
+            MandelbrotImage mandelbrot_image(mandelbrot_width, mandelbrot_height, cx-0.1, cy, d);
+        break;
+        case Qt::Key_Right:
+            MandelbrotImage mandelbrot_image(mandelbrot_width, mandelbrot_height, cx+0.1, cy, d);
+            break;
+        case Qt::Key_Down:
+            MandelbrotImage mandelbrot_image(mandelbrot_width, mandelbrot_height, cx+0.1, cy, d);
+            break;
+        case Qt::Key_Up:
+            //
+            break;
+        case Qt::Key_Plus:
+            //
+            break;
+        case Qt::Key_Minus:
+            //
+            break;
+        default:
+            MainWindow::keyPressEvent(event);
+        }
+}
+
 
 //Mandelbrot
-const int mandelbrot_width = 600;
-const int mandelbrot_height = 400;
+
 
 void MainWindow::slot_load_Mandelbrot_image() {
 
@@ -74,11 +104,14 @@ void MainWindow::slot_load_Mandelbrot_image() {
   // Create a QImage of required size
   // Draw a simple black/white checker board
 
+    //image parameters
+
     auto start = std::chrono::high_resolution_clock::now();
 
-    MandelbrotImage mandelbrot_image(mandelbrot_width, mandelbrot_height);
+    MandelbrotImage mandelbrot_image(mandelbrot_width, mandelbrot_height, cx, cy, d);
 
     auto end = std::chrono::high_resolution_clock::now();
+    //compite exec time
     auto interval = end-start;
     int64_t t = std::chrono::duration_cast<std::chrono::microseconds>(interval).count();
     Commify exe_time(t);

@@ -10,13 +10,9 @@
 class MandelbrotImage : public QImage
 {
 public:
-  MandelbrotImage(const int width, const int height);
+  MandelbrotImage(const int width, const int height, const double xc, const double yc, const double d);
 
 private:
-  //image parameters
-  double cx = -0.5;
-  double cy = 0;
-  double d = 1.0;
 
   double px_min = 0.0;
   double px_max = 599.0;
@@ -40,8 +36,9 @@ private:
   double v_pixel2rect(double py, double cy, double d, double py_min, double py_max);
   QRgb interpolColors(double x);
   QRgb calc_in_out(double rx, double ry);
+  QRgb calc_Julia(double rx, double ry);
   void create_gradient_colors();
-  void process_sub_image(int current_thread, int max_threads);
+  void process_sub_image(int current_thread, int max_threads, double xc, double yc, double d);
 };
 
 #endif // MANDELBROTIMAGE_H

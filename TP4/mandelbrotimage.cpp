@@ -4,14 +4,14 @@
 #include <cmath>
 
 
-MandelbrotImage::MandelbrotImage(const int width, const int height): QImage (width, height, QImage::Format_RGB32){
+MandelbrotImage::MandelbrotImage(const int width, const int height, const double xc, const double yc, const double d): QImage (width, height, QImage::Format_RGB32){
     create_gradient_colors();
     std::vector<std::thread> threads;
     const int max_threads = 4;
 
     for(int i = 0; i < max_threads; i++) {
         threads.emplace_back([=]() {
-            process_sub_image(i, max_threads);
+            process_sub_image(i, max_threads, xc, yc, d);
         });
      }
     for(auto &thread_elem :threads){
@@ -109,17 +109,48 @@ QRgb MandelbrotImage::interpolColors(double x) {
  *  @current_thread: index of subsection to process
  *  @max_threads: number of threads available on machine
  */
-void MandelbrotImage::process_sub_image(int current_thread, int max_threads){
+void MandelbrotImage::process_sub_image(int current_thread, int max_threads, double xc, double yc, double d){
 
     int sub_image_height = height() / max_threads;
     int yi = current_thread * sub_image_height;
 
     for (int py = yi; py < sub_image_height + yi; py++) {
-        double ry = v_pixel2rect(py, cy, d, py_min, py_max);
+        double ry = v_pixel2rect(py, yc, d, py_min, py_max);
         for (int px = 0; px < width(); px++) {
-            double rx = h_pixel2rect(px, cx, d, px_min, px_max);
-            QRgb rgb_color = calc_in_out(rx, ry);
+            double rx = h_pixel2rect(px, xc, d, px_min, px_max);
+            QRgb rgb_color = calc_Julia(rx, ry);
             setPixel(px, py, rgb_color);
         }
     }
 }
+
+QRgb MandelbrotImage::calc_Julia(double rx, double ry)
+{
+    //c0= -0.4 + 0.6i
+    //z0 = rx + iry
+    std::complex<double> c0(-0.4, 0.6);
+    std::complex z(rx, ry);
+    QRgb color= qRgb(0, 0, 0); //black
+
+    bool is_inside = true;
+    int i = 0;
+
+    for(int n = 0; n < 512; n++){
+        z = z * z + c0;
+        //auto real = z.real();
+        //auto imag = z.imag();
+        //double module = std::sqrt(real * real + imag * imag);
+        double module = abs(z);
+        if (module > 2) {
+            is_inside = false;
+         }
+         if(!is_inside and module >= 256){
+             double v = std::log2(std::log2(norm(z)));
+             i = static_cast<int>(1024*sqrt(n + 5 -v)) % 2048;
+             color = tab_colors[i];
+             return color;
+         }
+        }
+       return color;
+    }
+

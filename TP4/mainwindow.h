@@ -36,6 +36,9 @@ private:
 
   QMenu *menu_open_;
   QMenu *menu_help_;
+
+protected:
+   void keyPressEvent(QKeyEvent *event) override;
 };
 
 
