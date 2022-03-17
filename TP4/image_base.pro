@@ -30,6 +30,7 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     Commify.h \
+    Pixel2rect_Converter.h \
     interpolator.h \
     mandelbrotimage.h
 

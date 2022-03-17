@@ -1,4 +1,5 @@
 #include "mandelbrotimage.h"
+#include "Pixel2rect_Converter.h"
 #include <iostream>
 #include <complex>
 #include <cmath>
@@ -23,9 +24,10 @@ MandelbrotImage::MandelbrotImage(const int width, const int height): QImage (wid
     }
 }
 
+
 /*
  * Role : returns the corresponding real world x coordinate of the @px pixel's row
- */
+
 double MandelbrotImage::h_pixel2rect(double px, double cx, double d, double px_min, double px_max){
     //linea interpolation with x
     //px: 0        ---           599
@@ -38,9 +40,9 @@ double MandelbrotImage::h_pixel2rect(double px, double cx, double d, double px_m
 }
 
 
-/*
+
  * Role : returns the corresponding real world y coordinate of the @py pixel's column
- */
+ *
 double MandelbrotImage::v_pixel2rect(double py, double cy, double d, double py_min, double py_max){
     //linea interpolation with y
     //py: 0        ---           399
@@ -51,7 +53,7 @@ double MandelbrotImage::v_pixel2rect(double py, double cy, double d, double py_m
     double ry = -ay * py + by;
     return ry;
 }
-
+*/
 
 /*
  * Role : returns the QRgb color of the pixel of coordinates(rx,ry)
@@ -147,11 +149,14 @@ void MandelbrotImage::process_sub_image(int current_thread, int max_threads){
 
     int sub_image_height = height() / max_threads;
     int yi = current_thread * sub_image_height;
+    Pixel2rect_Converter h_pixel2rect(0, width(),cx-1.5*d, cx+1.5*d);
+    Pixel2rect_Converter v_pixel2rect(0, height(), cy+d, cy-d);
+
 
     for (int py = yi; py < sub_image_height + yi; py++) {
-        double ry = v_pixel2rect(py, cy, d, py_min, py_max);
+        double ry = v_pixel2rect(py);
         for (int px = 0; px < width(); px++) {
-            double rx = h_pixel2rect(px, cx, d, px_min, px_max);
+            double rx = h_pixel2rect(px);
             QRgb rgb_color = calc_Julia(rx,ry);//calc_in_out(rx, ry);
             setPixel(px, py, rgb_color);
         }
