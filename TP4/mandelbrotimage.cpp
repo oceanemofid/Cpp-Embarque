@@ -24,37 +24,6 @@ MandelbrotImage::MandelbrotImage(const int width, const int height): QImage (wid
     }
 }
 
-
-/*
- * Role : returns the corresponding real world x coordinate of the @px pixel's row
-
-double MandelbrotImage::h_pixel2rect(double px, double cx, double d, double px_min, double px_max){
-    //linea interpolation with x
-    //px: 0        ---           599
-    //rx: xc-1.5d      ---       xc+1.5d
-    //a , b
-    double ax = (3.0 * d / (px_max - px_min));
-    double bx = cx -1.5 * d;
-    double rx = ax * px + bx;
-    return rx;
-}
-
-
-
- * Role : returns the corresponding real world y coordinate of the @py pixel's column
- *
-double MandelbrotImage::v_pixel2rect(double py, double cy, double d, double py_min, double py_max){
-    //linea interpolation with y
-    //py: 0        ---           399
-    //ry: yc+d      ---          yc-d
-    //a , b
-    double ay = (2.0 * d / (py_max - py_min));
-    double by = cy + d;
-    double ry = -ay * py + by;
-    return ry;
-}
-*/
-
 /*
  * Role : returns the QRgb color of the pixel of coordinates(rx,ry)
  *        depending on if it's inside the MandelbortImage.
