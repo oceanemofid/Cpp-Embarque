@@ -1,9 +1,10 @@
-
 #include "mainwindow.h"
 #include <iostream>
 #include <string>
 #include <QtWidgets>
 #include "mandelbrotimage.h"
+#include "Commify.h"
+#include <chrono>
 
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
@@ -73,7 +74,16 @@ void MainWindow::slot_load_Mandelbrot_image() {
   // Create a QImage of required size
   // Draw a simple black/white checker board
 
+    auto start = std::chrono::high_resolution_clock::now();
+
     MandelbrotImage mandelbrot_image(mandelbrot_width, mandelbrot_height);
+
+    auto end = std::chrono::high_resolution_clock::now();
+    auto interval = end-start;
+    int64_t t = std::chrono::duration_cast<std::chrono::microseconds>(interval).count();
+    Commify exe_time(t);
+    std::cout << "INFO: image calculated in  " << exe_time << " us\n";
+
     image_widget_->setPixmap(QPixmap::fromImage(mandelbrot_image));
     image_widget_->setFixedSize(mandelbrot_width, mandelbrot_height);
     adjustSize();

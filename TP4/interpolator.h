@@ -21,7 +21,7 @@ public:
         bi_ = y;
         bi_.push_back(y.back());
         xs_.push_back(1.0);
-        for (unsigned long long i = 0; i < xs_.size() - 1; i++) {
+        for (unsigned long i = 0; i < xs_.size() - 1; i++) {
             ai_.push_back((y[i + 1] - y[i]) / (xs_[i + 1] - xs_[i]));
          }
     }

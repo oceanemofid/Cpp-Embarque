@@ -13,6 +13,16 @@ public:
   MandelbrotImage(const int width, const int height);
 
 private:
+  //image parameters
+  double cx = -0.5;
+  double cy = 0;
+  double d = 1.0;
+
+  double px_min = 0.0;
+  double px_max = 599.0;
+  double py_min = 0.0;
+  double py_max = 399.0;
+
   //color points
   std::vector<double> xs_{ 0., 0.16, 0.42, 0.6425, 0.8575};
   std::vector<double> yr_{ 0., 32. , 237. , 215. , 0. };

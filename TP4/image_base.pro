@@ -29,6 +29,7 @@ SOURCES += main.cpp\
 
 
 HEADERS  += mainwindow.h \
+    Commify.h \
     interpolator.h \
     mandelbrotimage.h
 
