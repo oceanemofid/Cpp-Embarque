@@ -73,9 +73,9 @@ void MainWindow::slot_load_Mandelbrot_image() {
   // Create a QImage of required size
   // Draw a simple black/white checker board
 
-    MandelbrotImage mandelbrot_image(mandelbrot_width,mandelbrot_height);
+    MandelbrotImage mandelbrot_image(mandelbrot_width, mandelbrot_height);
     image_widget_->setPixmap(QPixmap::fromImage(mandelbrot_image));
-    image_widget_->setFixedSize(mandelbrot_width,mandelbrot_height);
+    image_widget_->setFixedSize(mandelbrot_width, mandelbrot_height);
     adjustSize();
  }
 
