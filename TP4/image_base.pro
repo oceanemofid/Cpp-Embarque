@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = triangle
+TARGET = fractal
 TEMPLATE = app
 
 CONFIG(debug, debug|release) {
@@ -24,14 +24,15 @@ UI_DIR = $$DESTDIR/.ui
 
 
 SOURCES += main.cpp\
-    mainwindow.cpp \
-    mandelbrotimage.cpp
+    fractalimage.cpp \
+    mainwindow.cpp
 
 
 HEADERS  += mainwindow.h \
     Commify.h \
+    fractalimage.h \
     interpolator.h \
-    mandelbrotimage.h
+    pixel2rect.h
 
 QMAKE_CXXFLAGS += -std=c++17
 
