@@ -83,6 +83,32 @@ QRgb MandelbrotImage::calc_in_out(double rx, double ry)
        return color;
     }
 
+QRgb MandelbrotImage::calc_Julia(double rx, double ry)
+{
+    //c0= x0 +iy0
+    //z0 = 0
+    std::complex<double> c0(-0.4, 0.6);
+    std::complex z(rx, ry);
+    QRgb color= qRgb(0, 0, 0); //black
+
+    bool is_inside = true;
+    int i = 0;
+
+    for(int n = 0; n < 512; n++){
+        z = z * z + c0;
+        double module = abs(z);
+        if (module > 2) {
+            is_inside = false;
+         }
+         if(!is_inside and module >= 256){
+             double v = std::log2(std::log2(module * module));
+             i = static_cast<int>(1024*sqrt(n + 5 -v)) % 2048;
+             color = tab_colors[i];
+             return color;
+         }
+        }
+       return color;
+    }
 
 /*
  * Role: create a gradient of colors
@@ -124,7 +150,7 @@ void MandelbrotImage::process_sub_image(int current_thread, int max_threads){
         double ry = v_pixel2rect(py, cy, d, py_min, py_max);
         for (int px = 0; px < width(); px++) {
             double rx = h_pixel2rect(px, cx, d, px_min, px_max);
-            QRgb rgb_color = calc_in_out(rx, ry);
+            QRgb rgb_color = calc_Julia(rx,ry);//calc_in_out(rx, ry);
             setPixel(px, py, rgb_color);
         }
     }

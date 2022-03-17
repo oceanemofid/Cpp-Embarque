@@ -40,6 +40,7 @@ private:
   double v_pixel2rect(double py, double cy, double d, double py_min, double py_max);
   QRgb interpolColors(double x);
   QRgb calc_in_out(double rx, double ry);
+  QRgb calc_Julia(double rx, double ry);
   void create_gradient_colors();
   void process_sub_image(int current_thread, int max_threads);
 };
