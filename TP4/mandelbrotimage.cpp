@@ -46,7 +46,7 @@ double MandelbrotImage::h_pixel2rect(double py, double cy, double d, double py_m
 std::pair<double,double> MandelbrotImage::convert(double px, double py){
     double cx = -0.5;
     double cy = 0.0;
-    double d = 1.0;
+    double d = 5.0;
 
     double px_min=0.0;
     double px_max=599.0;
@@ -74,48 +74,13 @@ std::pair<bool, QRgb> MandelbrotImage::calc_in_out(double rx, double ry)
     std::vector<std::tuple<int,int,int>> tab_color;
     for(int n=0; n<512; n++){
         z = z*z+c0;
-        double module= sqrt(z.real()*z.real()+z.imag()*z.imag());
+        double module= abs(z);
         if(module>2){
             color=qRgb(255,218,103);
             is_inside=false;
-            break;
+
         }
     }
     return std::make_pair(is_inside, color);
 }
-
-std::tuple<int,int,int> MandelbrotImage::getColor(double y){
-
-
-
-}
-
-
-
-
-/*
- * interpolC = void qui met à jour les ai pour R,G,B qui sont des variables memnres
- *
- *
- *
- *
- */
-
-MandelbrotImage::interpolC(std::vector<double> ys){
-    std::vector<double> ai_;
-    std::vector<double> bi_;
-    bi_=ys;
-    for(int i=0; i<xs_.size()-1; i++) {
-          ai_.push_back((ys[i+1]-ys[i])/(xs_[i+1]-xs_[i]));
-        }
-}
-
-double MandelbrotImage::get_value(const double y) const {
-    for(int i=0; i<xs_.size(); i++) {
-      if(xs_[i]<= x and x <= xs_[i+1]){
-          return ;
-      }
-    }
-}
-
 
