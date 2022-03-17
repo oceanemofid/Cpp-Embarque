@@ -12,7 +12,7 @@ MandelbrotImage::MandelbrotImage(const int width, const int height): QImage (wid
     create_gradient_colors();
     //allows the parallelism in multi-thread
     std::vector<std::thread> threads;
-    const int max_threads = 4;
+    const int max_threads = 10;
 
     for(int i = 0; i < max_threads; i++) {
         threads.emplace_back([=]() {
@@ -126,7 +126,7 @@ void MandelbrotImage::process_sub_image(int current_thread, int max_threads){
         double ry = v_pixel2rect(py);
         for (int px = 0; px < width(); px++) {
             double rx = h_pixel2rect(px);
-            QRgb rgb_color = calc_Julia(rx,ry);//calc_in_out(rx, ry);
+            QRgb rgb_color = calc_in_out(rx, ry);//calc_Julia(rx,ry);/
             setPixel(px, py, rgb_color);
         }
     }

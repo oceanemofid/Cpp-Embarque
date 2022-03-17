@@ -36,8 +36,6 @@ private:
   Interpolator interpolation_B{xs_,yb_};
 
   //methods
-  double h_pixel2rect(double px, double cx, double d, double px_min, double px_max);
-  double v_pixel2rect(double py, double cy, double d, double py_min, double py_max);
   QRgb interpolColors(double x);
   QRgb calc_in_out(double rx, double ry);
   QRgb calc_Julia(double rx, double ry);
