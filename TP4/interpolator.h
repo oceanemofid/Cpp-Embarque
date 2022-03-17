@@ -15,7 +15,7 @@ private:
 
 public:
    /*
-    * contructeur crée affecte les coef de pente du ys passé en paramètre dans ai
+    * Role: Constructs an Interpolator object which sets up the ai and bi coefficients
     */
     Interpolator(std::vector<double> xs, std::vector<double> y) : xs_(xs) {
         bi_ = y;
@@ -27,7 +27,7 @@ public:
     }
 
     /*
-     * get value prend l'objet courant (un interpolator) et va return la valeur y=f(x)
+     * Role : Returns the @x interpolation with the current interpolator object
      */
     double get_value(const double x) const {
         for (unsigned int i = 0; i < xs_.size(); i++) {

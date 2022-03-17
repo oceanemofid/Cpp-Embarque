@@ -3,9 +3,13 @@
 #include <complex>
 #include <cmath>
 
-
+/*
+ * Role : Constructs a MandelbrotImage of size width x height
+ */
 MandelbrotImage::MandelbrotImage(const int width, const int height): QImage (width, height, QImage::Format_RGB32){
+    //create the vector of 2048 colors
     create_gradient_colors();
+    //allows the parallelism in multi-thread
     std::vector<std::thread> threads;
     const int max_threads = 4;
 
@@ -18,10 +22,10 @@ MandelbrotImage::MandelbrotImage(const int width, const int height): QImage (wid
         thread_elem.join();
     }
 }
-/*
- * Role : returns the corresponding real world x coordinate
- */
 
+/*
+ * Role : returns the corresponding real world x coordinate of the @px pixel's row
+ */
 double MandelbrotImage::h_pixel2rect(double px, double cx, double d, double px_min, double px_max){
     //linea interpolation with x
     //px: 0        ---           599
@@ -33,6 +37,10 @@ double MandelbrotImage::h_pixel2rect(double px, double cx, double d, double px_m
     return rx;
 }
 
+
+/*
+ * Role : returns the corresponding real world y coordinate of the @py pixel's column
+ */
 double MandelbrotImage::v_pixel2rect(double py, double cy, double d, double py_min, double py_max){
     //linea interpolation with y
     //py: 0        ---           399
@@ -44,6 +52,11 @@ double MandelbrotImage::v_pixel2rect(double py, double cy, double d, double py_m
     return ry;
 }
 
+
+/*
+ * Role : returns the QRgb color of the pixel of coordinates(rx,ry)
+ *        depending on if it's inside the MandelbortImage.
+ */
 QRgb MandelbrotImage::calc_in_out(double rx, double ry)
 {
     //c0= x0 +iy0
@@ -54,20 +67,15 @@ QRgb MandelbrotImage::calc_in_out(double rx, double ry)
 
     bool is_inside = true;
     int i = 0;
-    double mod = 0.0;
 
     for(int n = 0; n < 512; n++){
         z = z * z + c0;
-        //auto real = z.real();
-        //auto imag = z.imag();
-        //double module = std::sqrt(real * real + imag * imag);
         double module = abs(z);
         if (module > 2) {
             is_inside = false;
-            mod = module;
          }
          if(!is_inside and module >= 256){
-             double v = std::log2(std::log2(mod * mod));
+             double v = std::log2(std::log2(module * module));
              i = static_cast<int>(1024*sqrt(n + 5 -v)) % 2048;
              color = tab_colors[i];
              return color;
