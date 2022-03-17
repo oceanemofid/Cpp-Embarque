@@ -1,4 +1,5 @@
 #include "fractalimage.h"
+#include "pixel2rect.h"
 #include <iostream>
 #include <complex>
 #include <cmath>
@@ -14,7 +15,7 @@ void FractalImage::draw() {
     create_gradient_colors();
     //allows the parallelism in multi-thread
     std::vector<std::thread> threads;
-    const int max_threads = 16;
+    const int max_threads = 10;
 
     for(int i = 0; i < max_threads; i++) {
         threads.emplace_back([=]() {
@@ -104,7 +105,10 @@ QRgb MandelbrotImage::calc_in_out(double rx, double ry)
        return color;
     }
 
-
+/*
+ * Role : returns the QRgb color of the pixel of coordinates(rx,ry)
+ *        depending on if it's inside the JuliaImage.
+ */
 QRgb JuliaImage::calc_in_out(double rx, double ry)
 {
     //c0= x0 +iy0
@@ -131,4 +135,3 @@ QRgb JuliaImage::calc_in_out(double rx, double ry)
         }
        return color;
     }
-
