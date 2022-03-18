@@ -35,6 +35,9 @@ public:
         return std::clamp(ai_[i] * (x - xs_[i]) + bi_[i], 0., 255.);
     }
 
+    int operator()(const double x) {
+        return static_cast<int>(get_value(x));
+    }
 };
 
 #endif // INTERPOLATOR_H
