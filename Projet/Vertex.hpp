@@ -66,7 +66,7 @@ public:
         return s.str();
     }
 
-    friend std::ostream& operator<<(std::ostream &f, Edge &E){
+    friend std::ostream& operator<<(std::ostream &f, Vertex &E){
         return f << E.toString();
     }
 

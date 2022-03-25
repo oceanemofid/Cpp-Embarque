@@ -1,6 +1,6 @@
 #include <iostream>
 #include <sstream> 
-
+#pragma once
 class Edge {
 private :
     uint32_t FromID_;
@@ -39,7 +39,7 @@ public:
         return s.str();
     }
 
-    friend std::ostream &operator<<(std::ostream &f, Vertex &V){
+    friend std::ostream &operator<<(std::ostream &f, Edge &V){
         return f << V.toString();
     }
 
