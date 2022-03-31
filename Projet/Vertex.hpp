@@ -25,7 +25,11 @@ public:
         return latitude;
     }
     uint32_t getID() {
-        return latitude;
+        return ID;
+    }
+
+    vector<uint32_t> getAdjacency_List() {
+        return adjacency_List_;
     }
     
     //setters
@@ -38,10 +42,13 @@ public:
     void setLongitude(double L) {
         longitude = L;
     }
-
-    vector<uint32_t> getAdjacency_List() {
-        return adjacency_List_;
+    void setAdjacencyList(vector<uint32_t> adjacency_List){
+        for(int i;i<adjacency_List.size();i++){
+            adjacency_List[i]=adjacency_List_[i];
+        }
     }
+
+   
 
     //  void addEdgeToEdgelist(int toVertexID, int weight)
     //  {

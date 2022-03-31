@@ -1,20 +1,104 @@
 #include <vector>
+#include <set>
+#include <cstdlib>
+#include <iostream>
+#include <cstring>
 #include "Vertex.hpp"
 #include "Edge.hpp"
+#include <algorithm>
 
-using namespace std;
+
+//auto result = std::find_if( set.begin(), set.end() , [] (const uint32_t index) {return v.getID() == index;});
 
 class Graph {
-    vector<Vertex> vertices;
+    std::pair<std::set<Vertex>,std::set<Edge>> map_;
 
 public:
+    /*
+    *Role: Create the Graph associates to the CSV file @file
+    */
+    Graph(char* file) {
+        std::set<Vertex> vertices;
+        std::set<Edge> edges;
+        std::string file_name{file};
+        std::ifstream fin(file_name, std::ios::in);
+        std::string line, word;
+        std::vector<std::string> row;
+        
+        while (std::getline(fin, line)) {
+            std::istringstream stream(line);
+            while(std::getline(stream, word, ',')){
+                row.push_back(word);
+            }
+        }
+        auto it = row.begin();
+        while(it!=row.end()){
+            if(*it=="V"){
+            /* create vertex
+            vertex id = it+1
+            longitude =it +2
+            latitude = it+3
+            */
+            //get the Vextex attribute and s
+            uint32_t vertexid = static_cast<uint32_t>(std::stoul(*(it+1)));
+            double longitude = std::stod(*(it+2));
+            double latitude = std::stod(*(it+3));
+            //create the corresponding vertex
+            Vertex V = {longitude, latitude, vertexid};
+            //update the vertices set
+            vertices.insert(V);
+            }
+            else if(*it=="E"){
+                /*create edge
+                src = it+1
+                dst = it+2
+                length = it+3
+                name = it+4 //faculatatif
+                */
+            //get the Edges attribute and insert all edges in the set
+                uint32_t fromid = static_cast<uint32_t>(std::stoul(*(it+1)));
+                uint32_t toid = static_cast<uint32_t>(std::stoul(*(it+2)));
+                double length = std::stod(*(it+3));
+                //create the corresponding vertex
+                Edge E = {fromid, toid, length};
+                //update the edges set
+                edges.insert(E);
+            }
+            it=it+6;  
+        }
 
-    Graph() {}
+        
+        //Creation of the adjacency list of each Vertex
+        vector<uint32_t> v;
+        for (auto e : edges){
+            v.clear();
+            //we keep the base FromID 
+            uint32_t ref_ID = e.getFromID();
+            while(ref_ID == e.getFromID()){
+                
+                v.push_back(e.getToID());
+                e++;
+            }
+           
+           
+            auto result = std::find_if( vertices.begin(), vertices.end() , [&] (Vertex ref) {return ref.getID() == ref_ID;});
 
+        }
+
+        
+
+
+
+
+
+        map_= make_pair(vertices,edges);
+    }
+
+/*
     bool checkIfVertexExistByID(int vid) {
       bool flag = false;
-      for (int i = 0; i < vertices.size(); i++) {
-        if (vertices.at(i).getID() == vid) {
+      for (int i = 0; i < map_.size(); i++) {
+        if (map_.at(i).getID() == vid) {
           return true;
         }
       }
@@ -26,11 +110,11 @@ public:
         if (check == true) {
         cout << "Vertex with this ID already exist" << endl;
         } else {
-        vertices.push_back(newVertex);
+        map_.push_back(newVertex);
         cout << "New Vertex Added Successfully" << endl;
         }
     }
-    /*
+    
     Vertex getVertexByID(int vid) {
         Vertex temp;
         for (int i = 0; i < vertices.size(); i++) {
