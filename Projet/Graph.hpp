@@ -31,11 +31,16 @@ public:
             std::istringstream stream(line);
             std::regex e ("^# .*");
 
-            //if (!(std::regex_match (line,e))){
+            if (!(std::regex_match (line,e))){
                 while(std::getline(stream, word, ',')){
                     row.push_back(word);
                 }
             }
+        }
+
+        for (int i=0; i<6; i++ ){
+            std::cout << row[i] << " " << std::endl;
+        }
 
         auto it = row.begin();
         while(it!=row.end()){
@@ -53,6 +58,7 @@ public:
                 Vertex V = {longitude, latitude, vertexid};
                 //creation of a vertices map 
                 vertices.insert({vertexid, V});
+                it=it+5;
             }
             else if(*it=="E"){
                 /*create edge
@@ -69,8 +75,9 @@ public:
                 Edge E = {fromid, toid, length};
                 //update the edges set
                 edges.insert({fromid, E});
+                it=it+6;
             }
-            it=it+6;  
+              
         }
         
         std::ofstream myfile;
