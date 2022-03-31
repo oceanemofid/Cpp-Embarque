@@ -10,6 +10,7 @@
 #include <algorithm>
 
 
+
 //auto result = std::find_if( set.begin(), set.end() , [] (const uint32_t index) {return v.getID() == index;});
 
 class Graph {
@@ -38,9 +39,6 @@ public:
             }
         }
 
-        for (int i=0; i<6; i++ ){
-            std::cout << row[i] << " " << std::endl;
-        }
 
         auto it = row.begin();
         while(it!=row.end()){
@@ -96,25 +94,21 @@ public:
 
         //Creation of the adjacency list of each Vertex
         std::vector<uint32_t> adj_currentV;
-        
-        for(auto iterator=edges.begin(); iterator!=(edges.end()); iterator++){
+        auto iterator=edges.begin();
+        while(iterator!=(edges.end())){
             //adj_currentV.clear();
             //we keep the base FromID 
             uint32_t ref_ID = iterator->first;
-    
+
             while(ref_ID == (iterator->first)){
                 adj_currentV.push_back((iterator->second).getToID());
                 iterator++;
             }
-            auto pairKeyValue = vertices.find(63287);
-            std::cout << pairKeyValue->first << std::endl;
+            auto pairKeyValue = vertices.find(ref_ID);
             if(pairKeyValue!=vertices.end()){
                 pairKeyValue->second.setAdjacencyList(adj_currentV);
                 
             }  
-            if(pairKeyValue==vertices.end()){
-                std::cout<<"tu pues" << std::endl;
-            }
             adj_currentV.clear();          
         }
         map_= make_pair(vertices,edges);
@@ -122,6 +116,16 @@ public:
 
     std::pair<std::map<uint32_t, Vertex>,std::multimap<uint32_t, Edge>> getMap(){
         return map_;
+    }
+
+
+    
+    void printadj(std::vector<uint32_t> adjlist){
+        for(auto e : adjlist){
+            
+            std::cout << e << std::endl;   
+        }
+        std::cout << "-----------------" << std::endl;
     }
     
 /*
