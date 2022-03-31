@@ -2,17 +2,17 @@
 #include <string>
 #include <list>
 #include <iostream>
+#include <cstdlib>
 #include <vector>
 #include <sstream>
 
-using namespace std;
 
 class Vertex {
 private:
     double longitude; //vertex longitude
     double latitude;  //vertex latitude
     uint32_t ID;      //ID of the vertex
-    vector<uint32_t> adjacency_List_; //adjacency list of the vertex
+    std::vector<uint32_t> adjacency_List_; //adjacency list of the vertex
 
 public:
     Vertex(double L, double l, uint32_t i) : longitude(L), latitude(l), ID(i){}
@@ -28,7 +28,7 @@ public:
         return ID;
     }
 
-    vector<uint32_t> getAdjacency_List() {
+    std::vector<uint32_t> getAdjacency_List() {
         return adjacency_List_;
     }
     
@@ -42,9 +42,9 @@ public:
     void setLongitude(double L) {
         longitude = L;
     }
-    void setAdjacencyList(vector<uint32_t> adjacency_List){
-        for(int i;i<adjacency_List.size();i++){
-            adjacency_List[i]=adjacency_List_[i];
+    void setAdjacencyList(std::vector<uint32_t> adjacency_List){
+        for(int i=0;i<adjacency_List.size();i++){
+            adjacency_List_.push_back(adjacency_List[i]);
         }
     }
 

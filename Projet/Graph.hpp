@@ -1,8 +1,10 @@
 #include <vector>
 #include <set>
+#include <map>
 #include <cstdlib>
 #include <iostream>
 #include <cstring>
+#include <regex>
 #include "Vertex.hpp"
 #include "Edge.hpp"
 #include <algorithm>
@@ -11,15 +13,15 @@
 //auto result = std::find_if( set.begin(), set.end() , [] (const uint32_t index) {return v.getID() == index;});
 
 class Graph {
-    std::pair<std::set<Vertex>,std::set<Edge>> map_;
+    std::pair<std::map<uint32_t, Vertex>,std::multimap<uint32_t, Edge>> map_;
 
 public:
     /*
     *Role: Create the Graph associates to the CSV file @file
     */
     Graph(char* file) {
-        std::set<Vertex> vertices;
-        std::set<Edge> edges;
+        std::map<uint32_t,Vertex> vertices;
+        std::multimap<uint32_t,Edge> edges;
         std::string file_name{file};
         std::ifstream fin(file_name, std::ios::in);
         std::string line, word;
@@ -27,26 +29,30 @@ public:
         
         while (std::getline(fin, line)) {
             std::istringstream stream(line);
-            while(std::getline(stream, word, ',')){
-                row.push_back(word);
+            std::regex e ("^# .*");
+
+            //if (!(std::regex_match (line,e))){
+                while(std::getline(stream, word, ',')){
+                    row.push_back(word);
+                }
             }
-        }
+
         auto it = row.begin();
         while(it!=row.end()){
             if(*it=="V"){
-            /* create vertex
-            vertex id = it+1
-            longitude =it +2
-            latitude = it+3
-            */
-            //get the Vextex attribute and s
-            uint32_t vertexid = static_cast<uint32_t>(std::stoul(*(it+1)));
-            double longitude = std::stod(*(it+2));
-            double latitude = std::stod(*(it+3));
-            //create the corresponding vertex
-            Vertex V = {longitude, latitude, vertexid};
-            //update the vertices set
-            vertices.insert(V);
+                /* create vertex
+                vertex id = it+1
+                longitude =it +2
+                latitude = it+3
+                */
+                //get the Vextex attribute and s
+                uint32_t vertexid = static_cast<uint32_t>(std::stof(*(it+1)));
+                double longitude = std::stod(*(it+2));
+                double latitude = std::stod(*(it+3));
+                //create the corresponding vertex
+                Vertex V = {longitude, latitude, vertexid};
+                //creation of a vertices map 
+                vertices.insert({vertexid, V});
             }
             else if(*it=="E"){
                 /*create edge
@@ -56,44 +62,61 @@ public:
                 name = it+4 //faculatatif
                 */
             //get the Edges attribute and insert all edges in the set
-                uint32_t fromid = static_cast<uint32_t>(std::stoul(*(it+1)));
-                uint32_t toid = static_cast<uint32_t>(std::stoul(*(it+2)));
+                uint32_t fromid = static_cast<uint32_t>(std::stof(*(it+1)));
+                uint32_t toid = static_cast<uint32_t>(std::stof(*(it+2)));
                 double length = std::stod(*(it+3));
                 //create the corresponding vertex
                 Edge E = {fromid, toid, length};
                 //update the edges set
-                edges.insert(E);
+                edges.insert({fromid, E});
             }
             it=it+6;  
         }
-
         
-        //Creation of the adjacency list of each Vertex
-        vector<uint32_t> v;
-        for (auto e : edges){
-            v.clear();
-            //we keep the base FromID 
-            uint32_t ref_ID = e.getFromID();
-            while(ref_ID == e.getFromID()){
-                
-                v.push_back(e.getToID());
-                e++;
-            }
-           
-           
-            auto result = std::find_if( vertices.begin(), vertices.end() , [&] (Vertex ref) {return ref.getID() == ref_ID;});
-
+        std::ofstream myfile;
+        myfile.open ("vertices.txt");
+        for (auto i: vertices){
+            myfile << i.second << std::endl;
         }
+        myfile.close();
 
+        std::ofstream myfile2;
+        myfile2.open ("edges.txt");
+        for (auto i: edges){
+            myfile2 << i.second <<std::endl;
+        }
+        myfile2.close();
+
+        //Creation of the adjacency list of each Vertex
+        std::vector<uint32_t> adj_currentV;
         
-
-
-
-
-
+        for(auto iterator=edges.begin(); iterator!=(edges.end()); iterator++){
+            //adj_currentV.clear();
+            //we keep the base FromID 
+            uint32_t ref_ID = iterator->first;
+    
+            while(ref_ID == (iterator->first)){
+                adj_currentV.push_back((iterator->second).getToID());
+                iterator++;
+            }
+            auto pairKeyValue = vertices.find(63287);
+            std::cout << pairKeyValue->first << std::endl;
+            if(pairKeyValue!=vertices.end()){
+                pairKeyValue->second.setAdjacencyList(adj_currentV);
+                
+            }  
+            if(pairKeyValue==vertices.end()){
+                std::cout<<"tu pues" << std::endl;
+            }
+            adj_currentV.clear();          
+        }
         map_= make_pair(vertices,edges);
     }
 
+    std::pair<std::map<uint32_t, Vertex>,std::multimap<uint32_t, Edge>> getMap(){
+        return map_;
+    }
+    
 /*
     bool checkIfVertexExistByID(int vid) {
       bool flag = false;
