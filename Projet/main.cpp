@@ -10,21 +10,25 @@
 #include "Edge.hpp"
 #include "Graph.hpp"
 
-/*
-void printadj(std::vector<uint32_t> adjlist){
-    for(auto e : adjlist){
-        std::cout << "ok" << std::endl;
-        std::cout << e << std::endl;
-        
-    }
+
+template<typename T>
+void printList(std::vector<T> l){
+  for(const auto& x : l)
+    std::cout << x << " ";
+  std::cout << std::endl;
 }
-*/
+
 int main(int argc, char *argv[]){
     Graph graph(argv[1]);
-    /*std::map<uint32_t, Vertex> v = std::get<0>(graph.getMap());
-    auto it = v.find(11408);
-    Vertex v11408 = it->second;
-    std::vector<uint32_t> fjksndjkfj = v11408.getAdjacency_List();
-    printadj(fjksndjkfj);*/
+    
+    Graph::VertexMap v = graph.getVertices();
+    auto it = v.find(115099);
+    Vertex vx = it->second;
+
+    std::vector<uint32_t> l = vx.getAdjacencyList();
+    printList(l);
+    
+    graph.bfs(86771, 110636);
+    
     return EXIT_SUCCESS;
 }

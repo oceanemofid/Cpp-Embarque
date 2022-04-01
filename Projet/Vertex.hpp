@@ -1,4 +1,5 @@
 #pragma once
+
 #include <string>
 #include <list>
 #include <iostream>
@@ -9,73 +10,66 @@
 
 class Vertex {
 private:
-    double longitude; //vertex longitude
-    double latitude;  //vertex latitude
-    uint32_t ID;      //ID of the vertex
-    std::vector<uint32_t> adjacency_List_; //adjacency list of the vertex
+  double longitude_;
+  double latitude_;
+  uint32_t id_;
+  std::vector<uint32_t> adjacencyList_;
 
 public:
-    Vertex(double L, double l, uint32_t i) : longitude(L), latitude(l), ID(i){}
+  Vertex(double longitude, double latitude, uint32_t id) : longitude_(longitude), latitude_(latitude), id_(id) {}
 
-    //getters
-    double getLongitude() {
-        return longitude;
-    }
-    double getLatitude() {
-        return latitude;
-    }
-    uint32_t getID() {
-        return ID;
-    }
-
-    std::vector<uint32_t> getAdjacency_List() {
-        return adjacency_List_;
-    }
+  //
+  //getters
+  //
+  double getLongitude() const {
+    return longitude_;
+  }
     
-    //setters
-    void setID(uint32_t id) {
-        ID = id;
-    }
-    void setLatitude(double l) {
-        latitude = l;
-    }
-    void setLongitude(double L) {
-        longitude = L;
-    }
-    void setAdjacencyList(std::vector<uint32_t> adjacency_List){
-        for(int i=0;i<adjacency_List.size();i++){
-            adjacency_List_.push_back(adjacency_List[i]);
-        }
-    }
+  double getLatitude() const {
+    return latitude_;
+  }
+    
+  uint32_t getId() const {
+    return id_;
+  }
 
-   
-
-    //  void addEdgeToEdgelist(int toVertexID, int weight)
-    //  {
-    //	  	Edge e(toVertexID,weight);
-    //		edgeList.push_back(e); 
-    //		cout<<"Edge between "<<state_id<<" and "<<toVertexID<<" added Successfully"<<endl; 	
-    //  }
-    /*
-    void printEdgeList() {
-        cout << "Total visited vertices : " << endl;
-        cout << "Total vertex on path from start to end = " << endl;
-        for (auto it = edgeList.begin(); it != edgeList.end(); it++) {
-        cout << "Vertex[ "<< "indice ] = "<< it->getFromID() << "length =" << it -> getWeight() << endl;
-        }
-        cout << endl;
+  std::vector<uint32_t> getAdjacencyList() const {
+    return adjacencyList_;
+  }
+    
+  //
+  //setters
+  //
+  void setId(uint32_t id) {
+    id_ = id;
+  }
+    
+  void setLatitude(double latitude) {
+    latitude_ = latitude;
+  }
+    
+  void setLongitude(double longitude) {
+    longitude_ = longitude;
+  }
+      
+  void setAdjacencyList(std::vector<uint32_t> adjacencyList){
+    for(const auto& e : adjacencyList) {
+      adjacencyList_.push_back(e);
     }
-    */
+  }
 
-    std::string toString() {
-        std::ostringstream s;
-        s << "V " << ID << " " << longitude << " " << latitude << std::endl;
-        return s.str();
-    }
+  void addAdjacent(uint32_t id) {
+    adjacencyList_.push_back(id);
+  }
 
-    friend std::ostream& operator<<(std::ostream &f, Vertex &E){
-        return f << E.toString();
-    }
+  std::string toString() {
+    std::stringstream s;
+    s << "V " << id_ << " " << longitude_ << " " << latitude_;
+    return s.str();
+  }
 
+  friend std::ostream& operator<<(std::ostream &f, Vertex &v){
+    return f << v.toString();
+  }
 };
     

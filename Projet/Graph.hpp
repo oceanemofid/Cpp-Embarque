@@ -5,320 +5,155 @@
 #include <iostream>
 #include <cstring>
 #include <regex>
+#include <algorithm>
+#include <deque>
+
 #include "Vertex.hpp"
 #include "Edge.hpp"
-#include <algorithm>
 
-
-//auto result = std::find_if( set.begin(), set.end() , [] (const uint32_t index) {return v.getID() == index;});
 
 class Graph {
-    std::pair<std::map<uint32_t, Vertex>,std::multimap<uint32_t, Edge>> map_;
-
 public:
-    /*
-    *Role: Create the Graph associates to the CSV file @file
-    */
-    Graph(char* file) {
-        std::map<uint32_t,Vertex> vertices;
-        std::multimap<uint32_t,Edge> edges;
-        std::string file_name{file};
-        std::ifstream fin(file_name, std::ios::in);
-        std::string line, word;
-        std::vector<std::string> row;
-        
-        while (std::getline(fin, line)) {
-            std::istringstream stream(line);
-            std::regex e ("^# .*");
+  using VertexMap = std::map<uint32_t, Vertex>;
+  using EdgesMap = std::multimap<uint32_t, Edge>;
 
-            if (!(std::regex_match (line,e))){
-                while(std::getline(stream, word, ',')){
-                    row.push_back(word);
-                }
-            }
-        }
+private:
+  VertexMap vertices_;
+  EdgesMap edges_;
 
-        for (int i=0; i<6; i++ ){
-            std::cout << row[i] << " " << std::endl;
-        }
+  std::vector<std::string> split(const std::string& line) {
+	std::vector<std::string> elements;
 
-        auto it = row.begin();
-        while(it!=row.end()){
-            if(*it=="V"){
-                /* create vertex
-                vertex id = it+1
-                longitude =it +2
-                latitude = it+3
-                */
-                //get the Vextex attribute and s
-                uint32_t vertexid = static_cast<uint32_t>(std::stof(*(it+1)));
-                double longitude = std::stod(*(it+2));
-                double latitude = std::stod(*(it+3));
-                //create the corresponding vertex
-                Vertex V = {longitude, latitude, vertexid};
-                //creation of a vertices map 
-                vertices.insert({vertexid, V});
-                it=it+5;
-            }
-            else if(*it=="E"){
-                /*create edge
-                src = it+1
-                dst = it+2
-                length = it+3
-                name = it+4 //faculatatif
-                */
-            //get the Edges attribute and insert all edges in the set
-                uint32_t fromid = static_cast<uint32_t>(std::stof(*(it+1)));
-                uint32_t toid = static_cast<uint32_t>(std::stof(*(it+2)));
-                double length = std::stod(*(it+3));
-                //create the corresponding vertex
-                Edge E = {fromid, toid, length};
-                //update the edges set
-                edges.insert({fromid, E});
-                it=it+6;
-            }
-              
-        }
-        
-        std::ofstream myfile;
-        myfile.open ("vertices.txt");
-        for (auto i: vertices){
-            myfile << i.second << std::endl;
-        }
-        myfile.close();
+	std::istringstream is(line);
+	for(std::string elem; std::getline(is, elem, ','); ){
+	  elements.push_back(elem);
+	}
+	
+	return elements;
+  }
+  
+  void processLine(const std::string& line) {
+	char firstChar = line[0];
+	if(firstChar == 'V')
+	  processVertex(line);
 
-        std::ofstream myfile2;
-        myfile2.open ("edges.txt");
-        for (auto i: edges){
-            myfile2 << i.second <<std::endl;
-        }
-        myfile2.close();
+	else if(firstChar == 'E')
+	  processEdge(line);
+  }
 
-        //Creation of the adjacency list of each Vertex
-        std::vector<uint32_t> adj_currentV;
-        
-        for(auto iterator=edges.begin(); iterator!=(edges.end()); iterator++){
-            //adj_currentV.clear();
-            //we keep the base FromID 
-            uint32_t ref_ID = iterator->first;
-    
-            while(ref_ID == (iterator->first)){
-                adj_currentV.push_back((iterator->second).getToID());
-                iterator++;
-            }
-            auto pairKeyValue = vertices.find(63287);
-            std::cout << pairKeyValue->first << std::endl;
-            if(pairKeyValue!=vertices.end()){
-                pairKeyValue->second.setAdjacencyList(adj_currentV);
-                
-            }  
-            if(pairKeyValue==vertices.end()){
-                std::cout<<"tu pues" << std::endl;
-            }
-            adj_currentV.clear();          
-        }
-        map_= make_pair(vertices,edges);
-    }
+  void processVertex(const std::string& line) {
+	std::vector<std::string> elements = split(line);
+	
+	uint32_t vertexId = static_cast<uint32_t>(std::stol(elements[1]));
+	double longitude = std::stod(elements[2]);
+	double latitude = std::stod(elements[3]);
 
-    std::pair<std::map<uint32_t, Vertex>,std::multimap<uint32_t, Edge>> getMap(){
-        return map_;
-    }
-    
-/*
-    bool checkIfVertexExistByID(int vid) {
-      bool flag = false;
-      for (int i = 0; i < map_.size(); i++) {
-        if (map_.at(i).getID() == vid) {
-          return true;
-        }
-      }
-      return flag;
-    }
+	Vertex v = {longitude, latitude, vertexId};
+	vertices_.insert({vertexId, v});
+  }
 
-    void addVertex(Vertex newVertex) {
-        bool check = checkIfVertexExistByID(newVertex.getID());
-        if (check == true) {
-        cout << "Vertex with this ID already exist" << endl;
-        } else {
-        map_.push_back(newVertex);
-        cout << "New Vertex Added Successfully" << endl;
-        }
-    }
-    
-    Vertex getVertexByID(int vid) {
-        Vertex temp;
-        for (int i = 0; i < vertices.size(); i++) {
-        temp = vertices.at(i);
-        if (temp.getID() == vid) {
-            return temp;
-        }
-        }
-        return temp;
-    }
-    
-    bool checkIfEdgeExistByID(int fromVertex, int toVertex) {
-        Vertex v = getVertexByID(fromVertex);
-        list < Edge > e;
-        e = v.getEdgeList();
-        bool flag = false;
-        for (auto it = e.begin(); it != e.end(); it++) {
-        if (it -> getDestinationVertexID() == toVertex) {
-            flag = true;
-            return flag;
-            break;
-        }
+  void processEdge(const std::string& line) {
+	std::vector<std::string> elements = split(line);
+	
+	uint32_t fromId = static_cast<uint32_t>(std::stof(elements[1]));
+	uint32_t toId = static_cast<uint32_t>(std::stof(elements[2]));
+	double length = std::stod(elements[3]);
 
-        }
-        return flag;
-    }
+	Edge e = {fromId, toId, length};
+	edges_.insert({fromId, e});
 
-    void updateVertex(int oldVID, string vname) {
-        bool check = checkIfVertexExistByID(oldVID);
-        if (check == true) {
-        for (int i = 0; i < vertices.size(); i++) {
-            if (vertices.at(i).getStateID() == oldVID) {
-            vertices.at(i).setStateName(vname);
-            break;
-            }
-        }
-        cout << "Vertex(State) Updated Successfully " << endl;
-        }
-    }
+	auto itFromId = vertices_.find(fromId);
+	if(itFromId != vertices_.end())
+	  itFromId->second.addAdjacent(toId);
+	else
+	  std::cerr << "Edge created before associated vertex with id: " << fromId << std::endl;
+  }
 
-    void addEdgeByID(int fromVertex, int toVertex, int weight) {
-        bool check1 = checkIfVertexExistByID(fromVertex);
-        bool check2 = checkIfVertexExistByID(toVertex);
+  void exportVertexFile() {
+	std::ofstream f("vertices.txt");
+	for (auto& idVertexPair: vertices_){
+	  f << idVertexPair.second << std::endl;
+	}
+  }
 
-        bool check3 = checkIfEdgeExistByID(fromVertex, toVertex);
-        if ((check1 && check2 == true)) {
+  void exportEdgesFile() {
+	std::ofstream f("edges.txt");
+	for (auto& fromIdEdgePair : edges_){
+	  f << fromIdEdgePair.second <<std::endl;
+	}
+  }
 
-        if (check3 == true) {
-            cout << "Edge between " << getVertexByID(fromVertex).getStateName() << "(" << fromVertex << ") and " << getVertexByID(toVertex).getStateName() << "(" << toVertex << ") Already Exist" << endl;
-        } else {
+  
+public:  
+  //
+  // Role: Creates the Graph associated to the CSV file @file
+  //
+  Graph(const char* file) {
+	std::string file_name{file};
+	std::ifstream fin(file_name, std::ios::in);
+	
+	for(std::string line; std::getline(fin, line); ) {
+	  std::istringstream stream(line);
+	  std::regex e ("^# .*");
+	  if (!(std::regex_match (line, e))){
+	processLine(line);
+	  }
+	}
+#if DEBUG
+	exportVertexFile();
+	exportEdgesFile();
+#endif
+  }
 
-            for (int i = 0; i < vertices.size(); i++) {
+  VertexMap getVertices() {
+	return vertices_;
+  }
 
-            if (vertices.at(i).getStateID() == fromVertex) {
-                Edge e(toVertex, weight);
-                //edgeList.push_back(e); 
-                //vertices.at(i).addEdgeToEdgelist(toVertex,weight);
-                vertices.at(i).edgeList.push_back(e);
-            } else if (vertices.at(i).getStateID() == toVertex) {
-                Edge e(toVertex, weight);
-                //edgeList.push_back(e); 
-                //vertices.at(i).addEdgeToEdgelist(fromVertex,weight);
-                vertices.at(i).edgeList.push_back(e);
-            }
-            }
+  EdgesMap getEdges() {
+	return edges_;
+  }
 
-            cout << "Edge between " << fromVertex << " and " << toVertex << " added Successfully" << endl;
-        }
-        } else {
-        cout << "Invalid Vertex ID entered.";
-        }
-    }
+  template<typename T>
+  bool isInDeque(std::deque<T> d, T i) {
+	for(const auto& x : d) {
+	  if(x == i)
+	return true;
+	}
+	return false;
+  }
+  
+  void bfs(uint32_t vstart, uint32_t vend) {
+	std::deque<uint32_t> active_queue;
+	std::set<uint32_t> closed_set;
+	
+	// ID of the start vertex
+	active_queue.push_back(vstart);
 
-    void updateEdgeByID(int fromVertex, int toVertex, int newWeight) {
-        bool check = checkIfEdgeExistByID(fromVertex, toVertex);
-        if (check == true) {
-        for (int i = 0; i < vertices.size(); i++) {
+	uint32_t totalVisitedVertex = 0;
+	do {
+	  // from the current vertex in the front of the queue
+	  // compute all vertices reachable in 1 step
+	  uint32_t vcurrent = active_queue.front();
+	  active_queue.pop_front();
+	  ++totalVisitedVertex;
+	  
+	  if(vcurrent == vend)
+	break;
 
-            if (vertices.at(i).getStateID() == fromVertex) {
-            for (auto it = vertices.at(i).edgeList.begin(); it != vertices.at(i).edgeList.end(); it++) {
-                if (it -> getDestinationVertexID() == toVertex) {
-                it -> setWeight(newWeight);
-                break;
-                }
+	  closed_set.insert(vcurrent);
+	  
+	  auto itVcurrent = vertices_.find(vcurrent);
+	  if(itVcurrent == vertices_.end())
+	continue;
+	  
+	  for(auto& vnext : itVcurrent->second.getAdjacencyList()){
+	if(closed_set.find(vnext) != closed_set.end())
+	  continue;
 
-            }
-
-            } else if (vertices.at(i).getStateID() == toVertex) {
-            for (auto it = vertices.at(i).edgeList.begin(); it != vertices.at(i).edgeList.end(); it++) {
-                if (it -> getDestinationVertexID() == fromVertex) {
-                it -> setWeight(newWeight);
-                break;
-                }
-
-            }
-            }
-        }
-        cout << "Edge Weight Updated Successfully " << endl;
-        } else {
-        cout << "Edge between " << getVertexByID(fromVertex).getStateName() << "(" << fromVertex << ") and " << getVertexByID(toVertex).getStateName() << "(" << toVertex << ") DOES NOT Exist" << endl;
-        }
-    }
-
-    void deleteEdgeByID(int fromVertex, int toVertex) {
-        bool check = checkIfEdgeExistByID(fromVertex, toVertex);
-        if (check == true) {
-        for (int i = 0; i < vertices.size(); i++) {
-            if (vertices.at(i).getStateID() == fromVertex) {
-            for (auto it = vertices.at(i).edgeList.begin(); it != vertices.at(i).edgeList.end(); it++) {
-                if (it -> getDestinationVertexID() == toVertex) {
-                vertices.at(i).edgeList.erase(it);
-                //cout<<"First erase"<<endl;
-                break;
-                }
-            }
-            }
-
-            if (vertices.at(i).getStateID() == toVertex) {
-
-            for (auto it = vertices.at(i).edgeList.begin(); it != vertices.at(i).edgeList.end(); it++) {
-                if (it -> getDestinationVertexID() == fromVertex) {
-                vertices.at(i).edgeList.erase(it);
-                //cout<<"second erase"<<endl;
-                break;
-                }
-            }
-            }
-        }
-        cout << "Edge Between " << fromVertex << " and " << toVertex << " Deleted Successfully." << endl;
-        }
-    }
-
-    void deleteVertexByID(int vid) {
-        int vIndex = 0;
-        for (int i = 0; i < vertices.size(); i++) {
-        if (vertices.at(i).getStateID() == vid) {
-            vIndex = i;
-        }
-        }
-        for (int i = 0; i < vertices.size(); i++) {
-        for (auto it = vertices.at(i).edgeList.begin(); it != vertices.at(i).edgeList.end(); it++) {
-            if (it -> getDestinationVertexID() == vid) {
-            vertices.at(i).edgeList.erase(it);
-            break;
-            }
-        }
-
-        }
-        vertices.erase(vertices.begin() + vIndex);
-        cout << "Vertex Deleted Successfully" << endl;
-    }
-
-    void getAllNeigborsByID(int vid) {
-        cout << getVertexByID(vid).getStateName() << " (" << getVertexByID(vid).getStateID() << ") --> ";
-        for (int i = 0; i < vertices.size(); i++) {
-        if (vertices.at(i).getStateID() == vid) {
-            cout << "[";
-            for (auto it = vertices.at(i).edgeList.begin(); it != vertices.at(i).edgeList.end(); it++) {
-            cout << it -> getDestinationVertexID() << "(" << it -> getWeight() << ") --> ";
-            }
-            cout << "]";
-
-        }
-        }
-
-    }
-
-    void printGraph() {
-        for (int i = 0; i < vertices.size(); i++) {
-        Vertex temp;
-        temp = vertices.at(i);
-        cout << temp.getStateName() << " (" << temp.getStateID() << ") --> ";
-        temp.printEdgeList();
-        }
-    }
-    */
+	if(!isInDeque(active_queue, vnext))
+	  active_queue.push_back(vnext);
+	  }
+	} while (active_queue.size() != 0);
+	std::cout << "Total visited vertex = " << totalVisitedVertex << std::endl;
+  }
 };
