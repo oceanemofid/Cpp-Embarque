@@ -14,6 +14,7 @@ private:
   double latitude_;
   uint32_t id_;
   std::vector<uint32_t> adjacencyList_;
+  uint32_t previousID_;
 
 public:
   Vertex(double longitude, double latitude, uint32_t id) : longitude_(longitude), latitude_(latitude), id_(id) {}
@@ -57,10 +58,19 @@ public:
       adjacencyList_.push_back(e);
     }
   }
-
   void addAdjacent(uint32_t id) {
-    adjacencyList_.push_back(id);
+      adjacencyList_.push_back(id);
+    }
+    
+  uint32_t getPreviousID(){
+    return previousID_;
   }
+
+  void setPreviousID(uint32_t ID){
+    previousID_=ID;
+  }
+
+ 
 
   std::string toString() {
     std::stringstream s;
