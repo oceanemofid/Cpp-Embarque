@@ -30,11 +30,11 @@ public:
                     continue;
                 }
                 
-                double w = currentVertex.getWeight() + getWeight(vcurrent, vnext);
+                double w = currentVertex.getWeightUntilThisVertex() + getWeight_CurrentId_NextId(vcurrent, vnext);
                 if(!isInDeque(active_queue, vnext)){
                     getVertex(vnext).setPreviousId(currentVertex.getId());
                     active_queue.push_back(vnext);
-                    getVertex(vnext).setWeight(w);
+                    getVertex(vnext).setWeightUntilThisVertex(w);
                 }
             }
         } while (active_queue.size() != 0);

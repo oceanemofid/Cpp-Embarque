@@ -15,7 +15,7 @@ private:
     uint32_t id_;
     uint32_t previousId_{};
     std::vector<uint32_t> adjacencyList_;
-    double weight_{};     //accumulated length
+    double weight_UntilThisVertex_{};     //accumulated length
     
 public:
     Vertex(double longitude, double latitude, uint32_t id) : longitude_(longitude), latitude_(latitude), id_(id) {}
@@ -31,8 +31,8 @@ public:
         previousId_ = id;
     }
 
-    void setWeight(double w) {
-        weight_ = w;
+    void setWeightUntilThisVertex(double w) {
+        weight_UntilThisVertex_ = w;
     }
     
     //
@@ -58,8 +58,8 @@ public:
         return adjacencyList_;
     }
     
-    double getWeight() const {
-        return weight_;
+    double getWeightUntilThisVertex() const {
+        return weight_UntilThisVertex_;
     }
     
     std::string toString() const {

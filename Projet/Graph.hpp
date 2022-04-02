@@ -155,7 +155,7 @@ protected:
             std::cout << "Vertex [" << std::setw(4)  << i + 1 << "] = "
                                     << std::setw(7)  << v.getId()<< ", length = "
                                     << std::setw(10) << std::fixed << std::setprecision(2)
-                                    << v.getWeight() << std::endl;
+                                    << v.getWeightUntilThisVertex() << std::endl;
         }
     }
 
@@ -213,7 +213,7 @@ public:
         return false;
     }
     
-    double getWeight(uint32_t fromId, uint32_t toId) {
+    double getWeight_CurrentId_NextId(uint32_t fromId, uint32_t toId) { 
         double w = std::numeric_limits<double>::max();
  
         auto pairStartEnd = edges_.equal_range(fromId);

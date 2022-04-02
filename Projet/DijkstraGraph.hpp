@@ -7,7 +7,7 @@ private:
     void setAllVerticesWeightToMaxValue() {
         for(auto& pairIdVertex : vertices_) {
             Vertex& v = pairIdVertex.second;
-            v.setWeight(std::numeric_limits<double>::max());
+            v.setWeightUntilThisVertex(std::numeric_limits<double>::max()); //total weight
         }
     }
     
@@ -22,7 +22,7 @@ public:
         
         // ID of the start vertex
         active_queue.push_back(vstart);
-        getVertex(vstart).setWeight(0);
+        getVertex(vstart).setWeightUntilThisVertex(0);
         
         do {
             // from the current vertex in the front of the queue
@@ -39,20 +39,20 @@ public:
                     continue;
                 }
                 
-                double w = currentVertex.getWeight() + getWeight(vcurrent, vnext);
+                double w = currentVertex.getWeightUntilThisVertex() + getWeight_CurrentId_NextId(vcurrent, vnext);
                 Vertex& nextVertex = getVertex(vnext);
                 if(!isInDeque(active_queue, vnext)){
-                    nextVertex.setWeight(w);
+                    nextVertex.setWeightUntilThisVertex(w);
                     active_queue.push_back(vnext);
-                } else if(w < nextVertex.getWeight()){
-                    nextVertex.setWeight(w);
+                } else if(w < nextVertex.getWeightUntilThisVertex()){
+                    nextVertex.setWeightUntilThisVertex(w);
                 }
                 nextVertex.setPreviousId(currentVertex.getId());
             }
             // the partial sort ensures that the vertex with the smallest weight
             //  is the first on the active_queue
             auto weightCompare = [&](uint32_t a, uint32_t b) {
-                return getVertex(a).getWeight() < getVertex(b).getWeight();
+                return getVertex(a).getWeightUntilThisVertex() < getVertex(b).getWeightUntilThisVertex();
             };
             std::sort(active_queue.begin(), active_queue.end(), weightCompare);
         } while (active_queue.size() != 0);
