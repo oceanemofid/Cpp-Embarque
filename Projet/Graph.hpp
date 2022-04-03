@@ -23,7 +23,7 @@ protected:
     VertexMap vertices_;
     EdgesMap edges_;
 
-    static constexpr long double R0 = 6378137; //Earth radius in meters
+    static constexpr long double R0 = 6378.137; //Earth radius in kilometers
     double centerLongitude_; //for Mercator projection
     double centerLatitude_;  //
     struct CoordinatesMerc {
