@@ -2,7 +2,7 @@
 
 #include "Graph.hpp"
 
-class DijkstraGraph : public Graph {
+class AstarGraph : public Graph {
 private:
     void setAllVerticesWeightToMaxValue() {
         for(auto& pairIdVertex : vertices_) {
@@ -12,7 +12,7 @@ private:
     }
     
 public:
-    DijkstraGraph(std::string filename) : Graph(filename) {}
+    AstarGraph(std::string filename) : Graph(filename) {}
     
     std::deque<uint32_t> getPath(uint32_t vstart, uint32_t vend) override {
         std::deque<uint32_t> active_queue;
@@ -40,23 +40,29 @@ public:
                 }
                 
                 double w = currentVertex.getWeightUntilThisVertex() + getWeight_CurrentId_NextId(vcurrent, vnext);
+                double f = w + heuristic_distance_estimator(vnext, vend);
+                std::cout << heuristic_distance_estimator(vnext, vend) << std::endl;
                 Vertex& nextVertex = getVertex(vnext);
                 if(!isInDeque(active_queue, vnext)){
                     nextVertex.setWeightUntilThisVertex(w);
+                    nextVertex.setWeightEstimate(f);
                     active_queue.push_back(vnext);
                 } 
                 
-                else if(w < nextVertex.getWeightUntilThisVertex()){
+                else if(f < nextVertex.getWeightEstimate()){
                     nextVertex.setWeightUntilThisVertex(w);
+                    nextVertex.setWeightEstimate(f);
                 }
                 nextVertex.setPreviousId(currentVertex.getId());
             }
-            // the partial sort ensures that the vertex with the smallest weight
+            // the partial sort ensures that the vertex with the smallest estimated weight
             //  is the first on the active_queue
-            auto weightCompare = [&](uint32_t a, uint32_t b) {
-                return getVertex(a).getWeightUntilThisVertex() < getVertex(b).getWeightUntilThisVertex();
+
+            auto estimateCompare = [&](uint32_t a, uint32_t b) {
+                return getVertex(a).getWeightEstimate() < getVertex(b).getWeightEstimate();
             };
-            std::sort(active_queue.begin(), active_queue.end(), weightCompare);
+
+            std::sort(active_queue.begin(), active_queue.end(), estimateCompare);
         } while (active_queue.size() != 0);
         std::cout << "Total visited vertex = " << closed_set.size() << std::endl;
         

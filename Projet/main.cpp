@@ -12,6 +12,7 @@
 #include "Graph.hpp"
 #include "BfsGraph.hpp"
 #include "DijkstraGraph.hpp"
+#include "AstarGraph.hpp"
 
 int main(int argc, char *argv[]){
     uint32_t vstart;
@@ -35,6 +36,8 @@ int main(int argc, char *argv[]){
         graph = std::make_unique<BfsGraph>(filename);
     else if(searchType == "dij")
         graph = std::make_unique<DijkstraGraph>(filename);
+    else if(searchType == "astar")
+        graph = std::make_unique<AstarGraph>(filename);
 
     graph->getPath(vstart, vend);
     

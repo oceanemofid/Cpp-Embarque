@@ -26,21 +26,33 @@ protected:
     static constexpr long double R0 = 6378137; //Earth radius in meters
     double centerLongitude_; //for Mercator projection
     double centerLatitude_;  //
-    struct Coordinates {
+    struct CoordinatesMerc {
         double x;
         double y;
+    };
+    struct CoordinatesHeur {
+        double x;
+        double y;
+        double z;
     };
 
     //
     //Functions
     //
-    Coordinates getMercatorProjection(const Vertex& v) {
+    CoordinatesMerc getMercatorProjection(const Vertex& v) {
         double dlat = v.getLatitude() - centerLatitude_;
         
         double x = R0 * (v.getLongitude() - centerLongitude_);
         double y = R0 * std::log(std::tan(dlat / 2 + M_PI / 4));
         
         return {x, y};
+    }
+    CoordinatesHeur getHeuristicProjection(const Vertex& v) {
+        
+        double x = R0 * cos(v.getLatitude()) * cos(v.getLongitude());
+        double y = R0 * cos(v.getLatitude()) * sin(v.getLongitude());
+        double z = R0 * sin(v.getLatitude());
+        return {x, y, z};
     }
     
     void computeCentralCoordinates() {
@@ -81,8 +93,8 @@ protected:
         Vertex& vfrom = getVertex(fromId);
         Vertex& vto = getVertex(toId);
         
-        Coordinates cfrom = getMercatorProjection(vfrom);
-        Coordinates cto = getMercatorProjection(vto);
+        CoordinatesMerc cfrom = getMercatorProjection(vfrom);
+        CoordinatesMerc cto = getMercatorProjection(vto);
         
         double dx = cfrom.x - cto.x;
         double dy = cfrom.y - cto.y;
@@ -90,6 +102,22 @@ protected:
         return std::sqrt(dx * dx + dy * dy);
     }
     
+
+    double heuristic_distance_estimator(uint32_t fromId, uint32_t toId) {
+        Vertex& vfrom = getVertex(fromId);
+        Vertex& vto = getVertex(toId);
+
+
+        CoordinatesHeur cfrom = getHeuristicProjection(vfrom);
+        CoordinatesHeur cto = getHeuristicProjection(vto);
+        
+        double dx = (cfrom.x - cto.x);
+        double dy = (cfrom.y - cto.y);
+        double dz = (cfrom.z - cto.z);
+        return std::sqrt(dx * dx + dy * dy + dz * dz);
+    }
+
+
     std::vector<std::string> split(const std::string& line) {
         std::vector<std::string> elements;
         std::istringstream is(line);
