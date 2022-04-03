@@ -30,8 +30,9 @@ public:
             uint32_t vcurrent = active_queue.front();
             active_queue.pop_front();
             
-            closed_set.insert(vcurrent);
+           
             if(vcurrent == vend) break;
+            closed_set.insert(vcurrent);     
             
             Vertex& currentVertex = getVertex(vcurrent);
             for(auto& vnext : currentVertex.getAdjacencyList()){
@@ -44,12 +45,14 @@ public:
                 if(!isInDeque(active_queue, vnext)){
                     nextVertex.setWeightUntilThisVertex(w);
                     active_queue.push_back(vnext);
+                    nextVertex.setPreviousId(currentVertex.getId());
                 } 
                 
                 else if(w < nextVertex.getWeightUntilThisVertex()){
                     nextVertex.setWeightUntilThisVertex(w);
+                    nextVertex.setPreviousId(currentVertex.getId());
                 }
-                nextVertex.setPreviousId(currentVertex.getId());
+                
             }
             // the partial sort ensures that the vertex with the smallest weight
             //  is the first on the active_queue

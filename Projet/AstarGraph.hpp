@@ -30,8 +30,9 @@ public:
             uint32_t vcurrent = active_queue.front();
             active_queue.pop_front();
             
-            closed_set.insert(vcurrent);
+            
             if(vcurrent == vend) break;
+            closed_set.insert(vcurrent);
             
             Vertex& currentVertex = getVertex(vcurrent);
             for(auto& vnext : currentVertex.getAdjacencyList()){
@@ -40,20 +41,22 @@ public:
                 }
                 
                 double w = currentVertex.getWeightUntilThisVertex() + getWeight_CurrentId_NextId(vcurrent, vnext);
-                double f = w + heuristic_distance_estimator(vnext, vend);
-                std::cout << heuristic_distance_estimator(vnext, vend) << std::endl;
+                double f = w + computeWeight(vnext, vend);
                 Vertex& nextVertex = getVertex(vnext);
                 if(!isInDeque(active_queue, vnext)){
                     nextVertex.setWeightUntilThisVertex(w);
                     nextVertex.setWeightEstimate(f);
                     active_queue.push_back(vnext);
+                    nextVertex.setPreviousId(currentVertex.getId());
                 } 
                 
                 else if(f < nextVertex.getWeightEstimate()){
                     nextVertex.setWeightUntilThisVertex(w);
                     nextVertex.setWeightEstimate(f);
+                    
+                    nextVertex.setPreviousId(currentVertex.getId());
                 }
-                nextVertex.setPreviousId(currentVertex.getId());
+              
             }
             // the partial sort ensures that the vertex with the smallest estimated weight
             //  is the first on the active_queue

@@ -23,7 +23,7 @@ protected:
     VertexMap vertices_;
     EdgesMap edges_;
 
-    static constexpr long double R0 = 6378.137; //Earth radius in kilometers
+    static constexpr long double R0 = 6378137; //Earth radius in kilometers
     double centerLongitude_; //for Mercator projection
     double centerLatitude_;  //
     struct CoordinatesMerc {
@@ -41,17 +41,19 @@ protected:
     //
     CoordinatesMerc getMercatorProjection(const Vertex& v) {
         double dlat = v.getLatitude() - centerLatitude_;
-        
-        double x = R0 * (v.getLongitude() - centerLongitude_);
-        double y = R0 * std::log(std::tan(dlat / 2 + M_PI / 4));
+        double dlong = v.getLongitude() - centerLongitude_;
+
+        double x = R0 * std::cos(centerLatitude_*M_PI/180) * (dlong*M_PI/180);
+        double y = R0 * std::log(std::tan(dlat*M_PI/ 360 + M_PI / 4));
         
         return {x, y};
     }
+    
     CoordinatesHeur getHeuristicProjection(const Vertex& v) {
         
-        double x = R0 * cos(v.getLatitude()) * cos(v.getLongitude());
-        double y = R0 * cos(v.getLatitude()) * sin(v.getLongitude());
-        double z = R0 * sin(v.getLatitude());
+        double x = R0 * cos(v.getLatitude()*M_PI/180) * cos(v.getLongitude()*M_PI/180);
+        double y = R0 * cos(v.getLatitude()*M_PI/180) * sin(v.getLongitude()*M_PI/180);
+        double z = R0 * sin(v.getLatitude()*M_PI/180);
         return {x, y, z};
     }
     

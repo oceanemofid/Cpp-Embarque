@@ -19,10 +19,11 @@ public:
             uint32_t vcurrent = active_queue.front();
             active_queue.pop_front();
             
-            closed_set.insert(vcurrent);
             
             if(vcurrent == vend)
                 break;
+            
+            closed_set.insert(vcurrent);
             
             Vertex& currentVertex = getVertex(vcurrent);
             for(auto& vnext : currentVertex.getAdjacencyList()){
